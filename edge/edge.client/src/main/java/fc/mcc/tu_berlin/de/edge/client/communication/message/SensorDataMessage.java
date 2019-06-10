@@ -1,4 +1,4 @@
-package fc.mcc.tu_berlin.de.edge.client.communication;
+package fc.mcc.tu_berlin.de.edge.client.communication.message;
 
 import fc.mcc.tu_berlin.de.edge.client.sensors.SensorResult;
 
@@ -32,6 +32,15 @@ public class SensorDataMessage implements Message {
 	@Override
 	public String toString() {
 		return toJson();
+	}
+
+	@Override
+	public String toShortMessage() {
+		return String.format("%s,%s,%d,%d", 
+				this.name,
+				sensorResult.ultraShortString(),
+				firstTimeStamp,
+				lastTimeStamp - firstTimeStamp);
 	}
 
 }

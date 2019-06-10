@@ -39,7 +39,7 @@ public class SensorResult {
 					String.format(formatString,
 						x.getKey().sensorType.ordinal(),
 						x.getKey().uid,
-						x.getValue().intValue())).collect(Collectors.joining(",", "{", "}"));
+						x.getValue().intValue())).collect(Collectors.joining(","));
 	}
 	
 }

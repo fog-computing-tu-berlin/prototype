@@ -13,19 +13,29 @@ import fc.mcc.tu_berlin.de.edge.client.sensors.SensorType;
  */
 public class App {
 	
-	public static final boolean devMode = true;
+	public static boolean devMode = false;
 
 	/**
-	 * Call this method with your sensors as tuple
-	 * For example: (t,abc) (h,cde) (u,fgh)
+	 * Call this method with your plant name, button uid and sensors as tuple
+	 * For example: 192.168.99.100 myplant but (t,abc) (h,cde) (u,fgh)
 	 * to run a TemperatureSensor with id abc, Humidity with cde and UV with id fgh
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		
+		if(args.length < 5) {
+			System.out.println("At least 4 elements required.");
+			System.exit(1091283);
+		}
+		
+		if(args[args.length - 1].toLowerCase().equals("dev")) {
+			devMode = true;
+			System.out.println("DEV MODE");
+		}
+		
 		Orchestrator orchestrator = new Orchestrator();
-		String[] sensors = Arrays.copyOfRange(args, 1, args.length);
-		orchestrator.work(args[0], parseArgsToSensors(sensors));
+		String[] sensors = Arrays.copyOfRange(args, 3, devMode ? args.length - 1 : args.length);
+		orchestrator.work(args[1], args[2], parseArgsToSensors(sensors), args[0]);
 	}
 	
 	private static List<Sensor> parseArgsToSensors(String[] args) {
@@ -54,6 +64,8 @@ public class App {
 			}else throw new IllegalArgumentException("Wrong declaration for sensor tuple");
 			
 		}
+		
+		System.out.println("Found " + sensors.size() + " sensors!");
 		
 		return sensors;
 		

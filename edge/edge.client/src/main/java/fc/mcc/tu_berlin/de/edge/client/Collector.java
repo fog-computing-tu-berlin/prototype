@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import fc.mcc.tu_berlin.de.edge.client.communication.MessageSender;
-import fc.mcc.tu_berlin.de.edge.client.communication.SensorDataMessage;
+import fc.mcc.tu_berlin.de.edge.client.communication.message.SensorDataMessage;
 import fc.mcc.tu_berlin.de.edge.client.sensors.Sensor;
 import fc.mcc.tu_berlin.de.edge.client.sensors.SensorReader;
 import fc.mcc.tu_berlin.de.edge.client.sensors.SensorResult;

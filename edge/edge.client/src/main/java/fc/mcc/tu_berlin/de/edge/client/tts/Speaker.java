@@ -1,16 +1,23 @@
-package fc.mcc.tu_berlin.de.edge.client.util;
+package fc.mcc.tu_berlin.de.edge.client.tts;
 
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import com.sun.speech.freetts.Voice;
 import com.sun.speech.freetts.VoiceManager;
+
+import fc.mcc.tu_berlin.de.edge.client.sensors.Sensor;
+import fc.mcc.tu_berlin.de.edge.client.sensors.SensorResult;
+import fc.mcc.tu_berlin.de.edge.client.sensors.SensorType;
 
 /**
  * 
  * @author Fabian Lehmann
  *
  */
-public class Speaker {
+public abstract class Speaker {
 
 	private final String[] commands_water = {
 			"I'm thirsty",
@@ -48,30 +55,6 @@ public class Speaker {
 			"Currently everything is ok. Ask me later again, please."
 	};
 	
-	private final String[] current_values = {
-			"It is %s grad celsius, I am %s percent wet and have a solar radiation of %s milliwatt."
-	};
-
-	private Random random = new Random();
-	private static boolean init = false;
-	Voice voice;
-
-	public Speaker() {
-		if(!init) {
-			init = true;
-			init();
-		}
-		VoiceManager vm = VoiceManager.getInstance();
-		voice = vm.getVoice("kevin16");
-		voice.allocate();
-	}
-	
-	private void init() {
-		System.setProperty("logLevel", "OFF"); // INFO or WARN are also valid
-		System.setProperty("FreeTTSSynthEngineCentral", "com.sun.speech.freetts.jsapi.FreeTTSEngineCentral");
-		System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
-	}
-
 	public void needWater() {
 		String c = getStringFromArray(commands_water);
 		if(c.equals("water, water")) {
@@ -101,18 +84,45 @@ public class Speaker {
 		speek(c, 100);
 	}
 	
-	public void currentValues(double temp, double humdity, double uv) {
+	public void currentValues(SensorResult sr) {
 		
-		String c = getStringFromArray(current_values);
-		speek(String.format(c, temp, humdity, uv), 100);
+		List<String> list = sr.results.entrySet().stream()
+		.map(x -> String.format("%s sensor with id %s has %.1f %s %s", 
+				x.getKey().sensorType.name,
+				x.getKey().uid,
+				getValue(x),
+				x.getKey().sensorType.unit,
+				x.getKey().sensorType.name))
+		.collect(Collectors.toList());
 		
+		int last = list.size() - 1;
+		String text = String.join(" and ",
+                String.join(", ", list.subList(0, last)),
+                list.get(last)).concat(".");
+		
+		System.out.println(text);
+		speek(text, 100);
+		
+	}
+	
+	private double getValue(Entry<Sensor, Double> x) {
+		SensorType type = x.getKey().sensorType;
+		Double value = x.getValue();
+		switch (type) {
+		case HUMIDITY: return value / 10;
+		case TEMPERATURE: return value / 100;
+		case UV: return value / 250;
+		}
+		throw new IllegalArgumentException("Wrong sensor type");
+	}
+	
+	private Random random = new Random();
+	
+	private void speek(String s, int rate) {
+		speekImpl(s, rate + random.nextInt(9) - 4);
 	}
 
-	private void speek(String s, int rate) {
-		voice.setPitchRange(130 + random.nextInt(9) - 4);
-		voice.setRate(rate + random.nextInt(9) - 4);
-		voice.speak(s);
-	}
+	protected abstract void speekImpl(String s, int rate);
 
 	private String getStringFromArray(String[] s) {
 		return s[random.nextInt(s.length)];

@@ -4,6 +4,8 @@ import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ.Socket;
 
+import fc.mcc.tu_berlin.de.edge.client.communication.message.Message;
+
 /**
  * @author Fabian Lehmann
  *
@@ -30,14 +32,20 @@ public class MessageSender extends MessageHandler implements Runnable {
 			while(true) {
 				
 				while(!messages.isEmpty() && !Thread.interrupted()) {
-					Message message = messages.poll();
+					Message message = messages.peek();
 					
 					if(message != null) {
-						requester.send(message.toJson(), 0);
+						System.out.println("Send message: [" + message.toShortMessage() + "]");
+						requester.send(message.toShortMessage(), 0);
 						String reply = requester.recvStr(0);
-						System.out.println(
-								"Received reply [" + reply + "]"
-								);
+						if(!reply.equals("1")) {
+							System.out.println(
+									"Received reply [" + reply + "]"
+									);
+						}else {
+							//Remove if message was successfully transmitted.
+							messages.poll();
+						}
 					}
 					
 				}

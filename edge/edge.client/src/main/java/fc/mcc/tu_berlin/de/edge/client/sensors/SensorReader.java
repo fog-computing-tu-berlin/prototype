@@ -11,14 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-
-import com.tinkerforge.AlreadyConnectedException;
 import com.tinkerforge.BrickletHumidity;
 import com.tinkerforge.BrickletTemperature;
 import com.tinkerforge.BrickletUVLight;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
-import com.tinkerforge.NetworkException;
 import com.tinkerforge.NotConnectedException;
 import com.tinkerforge.TimeoutException;
 
@@ -26,11 +23,13 @@ import fc.mcc.tu_berlin.de.edge.client.App;
 
 public class SensorReader {
 	
-	private Map<Sensor, Device> sensors = new HashMap<Sensor, Device>();
+	private final Map<Sensor, Device> sensors = new HashMap<Sensor, Device>();
+	private final StatusHolder statusHolder;
 	
-	public SensorReader(List<Sensor> sensors, String HOST, int PORT) {
+	public SensorReader(List<Sensor> sensors, StatusHolder statusHolder, IPConnection ipcon) {
 		
-		IPConnection ipcon = new IPConnection();
+		this.statusHolder = statusHolder;
+		
 		Device d = null;
 		
 		for (Sensor sensor : sensors) {
@@ -45,14 +44,6 @@ public class SensorReader {
 			
 			this.sensors.put(sensor, d);
 			
-		}
-		
-		if(!App.devMode) {
-			try {
-				ipcon.connect(HOST, PORT);
-			} catch (NetworkException | AlreadyConnectedException e) {
-				e.printStackTrace();
-			}
 		}
 		
 	}
@@ -76,8 +67,9 @@ public class SensorReader {
 			results.put(entry.getKey(), value);
 			
 		}
-		
-		return new SensorResult(results);
+		SensorResult sr = new SensorResult(results);
+		statusHolder.setSensorResult(sr);
+		return sr;
 	}
 	
 	Random devModeRan =  new Random();
