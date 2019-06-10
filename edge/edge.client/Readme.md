@@ -1,4 +1,4 @@
-##To run that:
+## To run that:
 Add following arguments: ip name button_id tuple_of_sensors [dev mode]
 
 tuple_of_sensors (sensor_type,sensor_id)
@@ -10,7 +10,7 @@ example
 192.168.99.100 myplant but (t,abc) (h,cde) (u,dgh) DEV
 
 
-##Messageformat:
+## Messageformat:
 
 The client sends a message to the server.
 Format (without brackets):
