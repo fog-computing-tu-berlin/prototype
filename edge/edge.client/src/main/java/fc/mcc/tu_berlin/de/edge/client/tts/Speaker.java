@@ -5,9 +5,6 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import com.sun.speech.freetts.Voice;
-import com.sun.speech.freetts.VoiceManager;
-
 import fc.mcc.tu_berlin.de.edge.client.sensors.Sensor;
 import fc.mcc.tu_berlin.de.edge.client.sensors.SensorResult;
 import fc.mcc.tu_berlin.de.edge.client.sensors.SensorType;
@@ -89,19 +86,30 @@ public abstract class Speaker {
 		List<String> list = sr.results.entrySet().stream()
 		.map(x -> String.format("%s sensor with id %s has %.1f %s %s", 
 				x.getKey().sensorType.name,
-				x.getKey().uid,
+				uidToText(x.getKey().uid),
 				getValue(x),
 				x.getKey().sensorType.unit,
 				x.getKey().sensorType.name))
 		.collect(Collectors.toList());
 		
 		int last = list.size() - 1;
-		String text = String.join(" and ",
+		String text = String.join(", and ",
                 String.join(", ", list.subList(0, last)),
                 list.get(last)).concat(".");
 		
-		System.out.println(text);
 		speek(text, 100);
+		
+	}
+	
+	private String uidToText(String uid) {
+		
+		String s = "";
+		
+		for (int i = 0; i < uid.length() - 1; i++) {
+			s = s.concat(uid.charAt(i) + " ");
+		}
+		
+		return s + uid.charAt(uid.length() - 1);
 		
 	}
 	

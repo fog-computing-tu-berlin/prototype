@@ -16,7 +16,7 @@ class DefaultSpeaker extends Speaker {
 	Voice voice;
 	
 	private void init() {
-		System.setProperty("logLevel", "OFF"); // INFO or WARN are also valid
+		System.setProperty("logLevel", "INFO"); // INFO or WARN are also valid
 		System.setProperty("FreeTTSSynthEngineCentral", "com.sun.speech.freetts.jsapi.FreeTTSEngineCentral");
 		System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
 	}

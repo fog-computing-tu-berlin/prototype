@@ -12,8 +12,9 @@ public class SpeakerManager extends Speaker {
 	public SpeakerManager() {
 		//TODO change later
 		String system = System.getProperty("os.name");
+		System.out.println("System: " + system);
 		if(system.toLowerCase().contains("windows 10"))
-			speaker = new DefaultSpeaker();
+			speaker = new WindowsSpeaker();
 		else speaker = new DefaultSpeaker();
 	}
 

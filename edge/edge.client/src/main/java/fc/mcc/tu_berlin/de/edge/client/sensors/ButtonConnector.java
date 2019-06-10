@@ -2,10 +2,8 @@ package fc.mcc.tu_berlin.de.edge.client.sensors;
 
 import java.util.Scanner;
 
-import com.tinkerforge.AlreadyConnectedException;
 import com.tinkerforge.BrickletDualButton;
 import com.tinkerforge.IPConnection;
-import com.tinkerforge.NetworkException;
 import com.tinkerforge.NotConnectedException;
 import com.tinkerforge.TimeoutException;
 
@@ -24,6 +22,13 @@ public class ButtonConnector {
 	private final Speaker speaker = new SpeakerManager();
 	private final StatusHolder statusHolder;
 	private BlinkThread blinkThread = new BlinkThread();
+	
+	private boolean blinkedL = false;
+	private boolean blinkedR = false;
+	private Object changeHelper = new Object();
+	
+	private boolean buttonLOn = false;
+	private boolean buttonROn = false;
 	
 	public ButtonConnector(String id, IPConnection ipcon, StatusHolder statusHolder){
 		blinkThread.start();
@@ -62,8 +67,8 @@ public class ButtonConnector {
 			}.start();
 		}
 		
-		this.needNoWater();
-		this.noSunChange();
+		setLeds();
+		
 		
 	}
 	
@@ -95,17 +100,6 @@ public class ButtonConnector {
 		if(fine) speaker.fine();
 		
 	}
-	
-	
-	//linke led leuchtet: gießen, blinken gießen, lokal verechnet
-	//rechte led leuchtet: mehr sonne, blinken weniger sonne
-	
-	private boolean blinkedL = false;
-	private boolean blinkedR = false;
-	private Object changeHelper = new Object();
-	
-	private boolean buttonLOn = false;
-	private boolean buttonROn = false;
 	
 	public void needsWater() {
 		

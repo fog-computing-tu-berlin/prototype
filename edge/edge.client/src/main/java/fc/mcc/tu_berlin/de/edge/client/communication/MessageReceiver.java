@@ -2,8 +2,6 @@ package fc.mcc.tu_berlin.de.edge.client.communication;
 
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Context;
 import org.zeromq.ZMQ.Socket;
 
 import fc.mcc.tu_berlin.de.edge.client.communication.message.CommandMessage;
