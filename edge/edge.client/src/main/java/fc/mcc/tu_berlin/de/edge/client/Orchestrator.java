@@ -14,11 +14,11 @@ import fc.mcc.tu_berlin.de.edge.client.sensors.SensorReader;
  */
 public class Orchestrator {
 
-	public void work(List<Sensor> sensors) {
+	public void work(String name, List<Sensor> sensors) {
 		
 		SensorReader sr = new SensorReader(sensors, "localhost", 4223);
 
-		Collector collector = new Collector(new MessageSender("192.168.99.100", 5555), 50, 5, sr);
+		Collector collector = new Collector(name, new MessageSender("192.168.99.100", 5555), 50, 50, sr);
 		Thread collectorThread = new Thread(collector);
 		collectorThread.start();
 		

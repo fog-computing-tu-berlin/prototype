@@ -12,6 +12,7 @@ public class MessageSender extends MessageHandler implements Runnable {
 	
 	private final String host;
 	private final int port;
+	private final Object addHelper = new Object();
 	
 	public MessageSender(String host, int port) {
 		this.host = host;
@@ -21,35 +22,45 @@ public class MessageSender extends MessageHandler implements Runnable {
 	
 	@Override
 	public void run() {
-		while(!Thread.interrupted()) {
-			try (ZContext context = new ZContext()) {
-				//  Socket to talk to server
-				Socket requester = context.createSocket(SocketType.REQ);
-				requester.connect("tcp://"+ host + ":" + port);
+		try (ZContext context = new ZContext()) {
+			
+			Socket requester = context.createSocket(SocketType.REQ);
+			requester.connect("tcp://"+ host + ":" + port);
+			
+			while(true) {
 				
-				Message message = messages.poll();
-				
-				if(message != null) {
-					requester.send(message.toJson(), 0);
-					String reply = requester.recvStr(0);
-					System.out.println(
-							"Received reply [" + reply + "]"
-							);
+				while(!messages.isEmpty() && !Thread.interrupted()) {
+					Message message = messages.poll();
+					
+					if(message != null) {
+						requester.send(message.toJson(), 0);
+						String reply = requester.recvStr(0);
+						System.out.println(
+								"Received reply [" + reply + "]"
+								);
+					}
+					
 				}
-			}catch(Exception e) {
-				e.printStackTrace();
+				
+				try {
+					synchronized (addHelper) {
+						addHelper.wait();
+					}
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+					Thread.currentThread().interrupt();
+				}
 			}
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				Thread.currentThread().interrupt();
-			}
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
 	public void send(Message message){
 		this.messages.add(message);
+		synchronized (addHelper) {
+			addHelper.notifyAll();
+		}
 	}
 
 }

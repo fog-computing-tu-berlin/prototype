@@ -22,12 +22,14 @@ public class Collector implements Runnable {
 	private final SensorResult[] sensorResults;
 	private final SensorReader sr;
 	private int index = 0;
+	private String name;
 	
-	public Collector(MessageSender messageSender, int collectAllMs, int sendAllXMeasurements, SensorReader sr) {
+	public Collector(String name, MessageSender messageSender, int collectAllMs, int sendAllXMeasurements, SensorReader sr) {
 		super();
 		this.messageSender = messageSender;
 		this.collectAllMs = collectAllMs;
 		sensorResults = new SensorResult[sendAllXMeasurements];
+		this.name = name;
 		this.sr = sr;
 	}
 	
@@ -80,6 +82,7 @@ public class Collector implements Runnable {
 		}
 		
 		SensorDataMessage message = new SensorDataMessage(
+				this.name,
 				new SensorResult(results), 
 				sensorResults[0].createTime, 
 				sensorResults[sensorResults.length - 1].createTime) ;

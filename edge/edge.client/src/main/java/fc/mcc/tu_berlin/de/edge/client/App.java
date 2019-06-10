@@ -1,5 +1,6 @@
 package fc.mcc.tu_berlin.de.edge.client;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,8 +24,8 @@ public class App {
 	public static void main(String[] args) {
 		
 		Orchestrator orchestrator = new Orchestrator();
-		orchestrator.work(parseArgsToSensors(args));
-		
+		String[] sensors = Arrays.copyOfRange(args, 1, args.length);
+		orchestrator.work(args[0], parseArgsToSensors(sensors));
 	}
 	
 	private static List<Sensor> parseArgsToSensors(String[] args) {
