@@ -1,6 +1,42 @@
-version: '3'
+version: '3.7'
 services:
-  cloud:
-    build: .
+  # cloud:
+  #   build: .
+  #   ports:
+  #     - "5555:5555"
+  postgres:
+    image: "postgres:11"
+    environment:
+      - POSTGRES_PASSWORD=SuperSecurePassword
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=fgh
+    tmpfs:
+      - /var/lib/postgresql/data
+  flyway:
+    image: "boxfuse/flyway:6.0.0-beta2"
+    command: -url=jdbc:postgresql://postgres:5432/fgh -user=postgres -password=SuperSecurePassword -connectRetries=60 migrate
+    volumes:
+      - ./database:/flyway/sql:ro
+  postgrest:
+    image: "postgrest/postgrest:v5.2.0"
+    environment:
+      - PGRST_DB_ANON_ROLE=anon
+      - PGRST_DB_SCHEMA=public
+      - PGRST_DB_URI=postgres://postgres:SuperSecurePassword@postgres:5432/fgh
     ports:
-      - "5555:5555"
+      - '8080:3000'
+  swagger:
+    image: swaggerapi/swagger-ui:v3.0.5
+    ports:
+      - "8081:8080"
+    expose:
+      - "8080"
+    environment:
+      API_URL: http://localhost:8080/
+  pgAdmin:
+    image: "dpage/pgadmin4:4.8"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=dev@fgh
+      - PGADMIN_DEFAULT_PASSWORD=1234
+    ports:
+      - '5432:80'
