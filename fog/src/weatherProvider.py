@@ -25,7 +25,7 @@ class WeatherProvider:
 
     def __refresh_weather_buffer_to_old(self) -> None:
         if self.weather_buffer is None or self.weather_buffer_created_at is None or datetime.now() + timedelta(
-                minutes=30) < self.weather_buffer:
+                minutes=30) < self.weather_buffer_created_at:
             self.weather_buffer_created_at = datetime.now()
             self.weather_buffer = self.owm.three_hours_forecast(self.city)
 
@@ -37,10 +37,10 @@ class WeatherProvider:
         current_weather = await self.get_weather()
         return current_weather.when_clear()
 
-    async def will_it_rain(self) -> List[Weather]:
+    async def will_it_rain(self) -> bool:
         current_weather = await self.get_weather()
         return current_weather.will_have_rain()
 
-    async def will_it_be_clear(self) -> List[Weather]:
+    async def will_it_be_clear(self) -> bool:
         current_weather = await self.get_weather()
         return current_weather.will_have_clear()

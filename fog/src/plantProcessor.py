@@ -17,7 +17,7 @@ class PlantProcessor:
     async def water_status(self, current_humidity: float) -> int:
         current_unsued_forecast = self.weather_provider.get_rain_forecast()
 
-        if current_humidity < self.plant.target_humidity() and not self.weather_provider.will_it_rain():
+        if current_humidity < self.plant.target_humidity() and not await self.weather_provider.will_it_rain():
             return WATER_MORE
 
         return WATER_NO_CHANGE
@@ -25,7 +25,7 @@ class PlantProcessor:
     async def uv_status(self, current_uv: float) -> int:
         current_unsued_forecast = self.weather_provider.get_clear_forecast()
 
-        if self.weather_provider.will_it_be_clear():
+        if await self.weather_provider.will_it_be_clear():
             return UV_LESS
 
         if current_uv > 0:
