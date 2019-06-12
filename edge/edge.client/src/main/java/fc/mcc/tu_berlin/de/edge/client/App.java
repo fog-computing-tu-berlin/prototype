@@ -42,7 +42,6 @@ public class App {
 		List<Sensor> sensors = new LinkedList<Sensor>();
 		
 		for (String s : args) {
-			
 			if(s.length() == 7 && s.startsWith("(") && s.endsWith(")") && s.contains(",") && s.indexOf(',') == s.lastIndexOf(',')){
 				
 				s = s.substring(1, s.length() - 1);
@@ -61,15 +60,11 @@ public class App {
 				
 				sensors.add(new Sensor(st, sa[1]));
 				
-			}else throw new IllegalArgumentException("Wrong declaration for sensor tuple");
+			} else throw new IllegalArgumentException("Wrong declaration for sensor tuple");
 			
 		}
-		
 		System.out.println("Found " + sensors.size() + " sensors!");
 		
 		return sensors;
-		
-		
 	}
-
 }

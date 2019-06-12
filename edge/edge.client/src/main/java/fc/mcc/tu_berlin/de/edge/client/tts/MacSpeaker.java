@@ -12,8 +12,8 @@ public class MacSpeaker extends Speaker{
 	@Override
 	protected void speekImpl(String s, int rate) {
 		Runtime rt = Runtime.getRuntime();
-		String command = "say \"" + s + "\" -v \"Samantha\"";
-		System.out.println(command);
+		String command = "say \"" + s + "\" -v Samantha";
+		// System.out.println(command);
 		try {
 			rt.exec(command);
 		} catch (IOException e) {
