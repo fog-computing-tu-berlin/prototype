@@ -16,6 +16,12 @@ class MessageProcessor:
         currentWeatherForcast = await self.get_weather_for_berlin()
         rain = currentWeatherForcast.when_rain()
         clear = currentWeatherForcast.when_clear()
+
+        willHaveSun = currentWeatherForcast.will_have_sun()
+        print('rain', rain)
+        print('clear', clear)
+        print('will_have_sun', willHaveSun)
+
         # Just an example for now
         return {"water": {"status": "notEnough", "amount": 5.25},
                 "light": {"status": "OK"}}
