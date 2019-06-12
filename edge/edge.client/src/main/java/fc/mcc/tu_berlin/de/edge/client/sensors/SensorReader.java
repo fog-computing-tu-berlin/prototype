@@ -74,14 +74,14 @@ public class SensorReader {
 	
 	Random devModeRan =  new Random();
 	
-	private int ranHumidity = devModeRan.nextInt(1001);
+	private int ranHumidity = devModeRan.nextInt(10001);
 	private int hum_dead = 0;
 	private boolean hum_was_dead = false;
 	
 	private Double readHumidity(Device d) {
 		if(App.devMode) {
 			ranHumidity += (devModeRan.nextInt(9) - 4);
-			ranHumidity = Math.min(Math.max(ranHumidity, 0), 1000);
+			ranHumidity = Math.min(Math.max(ranHumidity, 0), 10000);
 			return (double) ranHumidity;
 		}else {
 			if(hum_dead == 0) {
