@@ -17,5 +17,6 @@ class MessageProcessor:
         rain = currentWeatherForcast.when_rain()
         clear = currentWeatherForcast.when_clear()
         # Just an example for now
-        return {"water": {"status": "notEnough", "amount": 5.25},
-                "light": {"status": "OK"}}
+        #return {"water": {"status": "notEnough", "amount": 5.25},
+        #        "light": {"status": "OK"}}
+        return 1
