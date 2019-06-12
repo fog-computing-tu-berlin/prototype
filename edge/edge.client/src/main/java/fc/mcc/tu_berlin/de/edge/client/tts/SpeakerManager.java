@@ -15,6 +15,8 @@ public class SpeakerManager extends Speaker {
 		System.out.println("System: " + system);
 		if(system.toLowerCase().contains("windows 10"))
 			speaker = new WindowsSpeaker();
+		else if(system.toLowerCase().contains("mac"))
+			speaker = new MacSpeaker();
 		else speaker = new DefaultSpeaker();
 	}
 

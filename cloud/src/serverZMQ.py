@@ -14,7 +14,7 @@ async def recv_and_process():
         message = await socket.recv_string()
         print("Received request: ", message)
         reply = await messageProcessor.process_message(message)
-        await socket.send_json(reply)
+        await socket.send_string(str(reply))
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()

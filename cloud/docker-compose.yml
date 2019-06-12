@@ -1,9 +1,9 @@
 version: '3.7'
 services:
-  # cloud:
-  #   build: .
-  #   ports:
-  #     - "5555:5555"
+  cloud:
+    build: .
+    ports:
+      - "5555:5555"
   postgres:
     image: "postgres:11"
     environment:
