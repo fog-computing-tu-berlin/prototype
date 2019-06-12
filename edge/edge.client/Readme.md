@@ -26,7 +26,7 @@ That stands for 3 sensors. The first value defines the sensor type
 the 3 characters are the uid of the sensor
 the numbers until the comma are the value
 These value is in the same format as the thinkerforges ones (can be negative)
-You have to divide humidity by 10, temperature by 100 and uv by 250 to get the real value.
+You have to divide humidity by 100, temperature by 100 and uv by 250 to get the real value.
 
 timestamp = the data is accumulated this timestamp presents the timestamp of the first measurement
 last timestamp = this is not a real timestamp, just the difference to the first one. To get the last timestamp you have to add this value to the first timestamp

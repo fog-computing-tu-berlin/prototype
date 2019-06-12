@@ -117,7 +117,7 @@ public abstract class Speaker {
 		SensorType type = x.getKey().sensorType;
 		Double value = x.getValue();
 		switch (type) {
-		case HUMIDITY: return value / 10;
+		case HUMIDITY: return value / 100;
 		case TEMPERATURE: return value / 100;
 		case UV: return value / 250;
 		}

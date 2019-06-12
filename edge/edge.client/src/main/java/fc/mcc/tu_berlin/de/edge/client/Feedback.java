@@ -71,6 +71,7 @@ public class Feedback implements Runnable {
 	}
 	
 	private void selfCalculation() {
+		
 		SensorResult sr = statusHolder.getSensorResult();
 		Optional<Double> humidity = sr.results.entrySet()
 		.stream()
@@ -79,7 +80,8 @@ public class Feedback implements Runnable {
 		.findFirst();
 		if(humidity.isPresent()) {
 			local = true;
-			statusHolder.setNeedsWater(humidity.get() < 500);
+//			System.out.println(humidity.get());
+			statusHolder.setNeedsWater(humidity.get() < 5500);
 		}
 	}
 	

@@ -63,8 +63,8 @@ public class SensorReader {
 			case UV:          value = readUV(entry.getValue());
 			
 			}
-			
-			results.put(entry.getKey(), value);
+			if(value != null)
+				results.put(entry.getKey(), value);
 			
 		}
 		SensorResult sr = new SensorResult(results);
@@ -75,6 +75,8 @@ public class SensorReader {
 	Random devModeRan =  new Random();
 	
 	private int ranHumidity = devModeRan.nextInt(1001);
+	private int hum_dead = 0;
+	private boolean hum_was_dead = false;
 	
 	private Double readHumidity(Device d) {
 		if(App.devMode) {
@@ -82,18 +84,27 @@ public class SensorReader {
 			ranHumidity = Math.min(Math.max(ranHumidity, 0), 1000);
 			return (double) ranHumidity;
 		}else {
-			try {
-				return (double) ((BrickletHumidity) d).getHumidity();
-			} catch (TimeoutException | NotConnectedException e) {
-				e.printStackTrace();
-				return null;
+			if(hum_dead == 0) {
+				try {
+					return (double) ((BrickletHumidity) d).getHumidity();
+				} catch (TimeoutException | NotConnectedException e) {
+					hum_dead++;
+					if(!hum_was_dead) {
+						e.printStackTrace();
+						hum_was_dead = true;
+					}
+				}
+			}else {
+				hum_dead = (hum_dead + 1) % 1000;
 			}
 		}
-		
+		return null;
 	}
 	
 	//Up to 35°C
 	private int ranTemperature = devModeRan.nextInt(4500) - 10;
+	private int temp_dead = 0;
+	private boolean temp_was_dead = false;
 	
 	private Double readTemperature(Device d) {
 		if(App.devMode) {
@@ -101,17 +112,30 @@ public class SensorReader {
 			ranTemperature = Math.min(Math.max(ranTemperature, -10), 35);
 			return (double) ranTemperature;
 		}else {
-			try {
-				return (double) ((BrickletTemperature) d).getTemperature();
-			} catch (TimeoutException | NotConnectedException e) {
-				e.printStackTrace();
-				return null;
+			if(temp_dead == 0) {
+				try {
+					short temp = ((BrickletTemperature) d).getTemperature();
+					//if not connected
+					if(temp == -9443) return null;
+					return (double) temp;
+				} catch (TimeoutException | NotConnectedException e) {
+					temp_dead++;
+					if(!temp_was_dead) {
+						e.printStackTrace();
+						temp_was_dead = true;
+					}
+				}
+			}else {
+				temp_dead = (temp_dead + 1) % 1000;
 			}
 		}
+		return null;
 		
 	}
 	
 	private int ranUV = devModeRan.nextInt(1251);
+	private int uv_dead = 0;
+	private boolean uv_was_dead = false;
 	
 	private Double readUV(Device d) {
 		if(App.devMode) {
@@ -119,12 +143,20 @@ public class SensorReader {
 			ranUV = Math.min(Math.max(ranUV, 0), 1250);
 			return (double) ranUV;
 		}else {
-			try {
-				return (double) ((BrickletUVLight) d).getUVLight();
-			} catch (TimeoutException | NotConnectedException e) {
-				e.printStackTrace();
-				return null;
+			if(uv_dead == 0) {
+				try {
+					return (double) ((BrickletUVLight) d).getUVLight();
+				} catch (TimeoutException | NotConnectedException e) {
+					uv_dead++;
+					if(!uv_was_dead) {
+						e.printStackTrace();
+						uv_was_dead = true;
+					}
+				}
+			}else {
+				uv_dead = (uv_dead + 1) % 1000;
 			}
+			return null;
 		}
 		
 	}
