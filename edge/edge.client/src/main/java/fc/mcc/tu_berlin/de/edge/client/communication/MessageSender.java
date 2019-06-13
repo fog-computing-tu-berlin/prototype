@@ -16,7 +16,8 @@ public class MessageSender extends MessageHandler implements Runnable {
 	private final int port;
 	private final Object addHelper = new Object();
 	
-	public MessageSender(String host, int port) {
+	public MessageSender(String host, int port, String name) {
+		super("sender_" + name);
 		this.host = host;
 		this.port = port;
 		new Thread(this).start();
@@ -31,8 +32,8 @@ public class MessageSender extends MessageHandler implements Runnable {
 			
 			while(true) {
 				
-				while(!messages.isEmpty() && !Thread.interrupted()) {
-					Message message = messages.peek();
+				while(!this.isEmpty() && !Thread.interrupted()) {
+					Message message = this.peek();
 					
 					if(message != null) {
 //						System.out.println(message.toJson());
@@ -45,7 +46,7 @@ public class MessageSender extends MessageHandler implements Runnable {
 									);
 						}else {
 							//Remove if message was successfully transmitted.
-							messages.poll();
+							this.poll();
 						}
 					}
 					
@@ -64,9 +65,9 @@ public class MessageSender extends MessageHandler implements Runnable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void send(Message message){
-		this.messages.add(message);
+		this.add(message);
 		synchronized (addHelper) {
 			addHelper.notifyAll();
 		}

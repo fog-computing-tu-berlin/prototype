@@ -1,6 +1,11 @@
 package fc.mcc.tu_berlin.de.edge.client.communication.message;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import fc.mcc.tu_berlin.de.edge.client.sensors.Sensor;
 import fc.mcc.tu_berlin.de.edge.client.sensors.SensorResult;
+import fc.mcc.tu_berlin.de.edge.client.sensors.SensorType;
 
 /**
  * @author Fabian Lehmann
@@ -42,5 +47,39 @@ public class SensorDataMessage implements Message {
 				firstTimeStamp,
 				lastTimeStamp - firstTimeStamp);
 	}
+
+	public static Message parseMessage(String string) {
+		try {
+			
+			String[] split = string.split(",");
+			String name = split[0];
+			final Map<Sensor, Double> results = new HashMap<Sensor, Double>();
+			for (int i = 1; i < split.length - 2; i++) {
+				addToResults(results, split[i]);
+			}
+			
+			long first = Long.parseLong(split[split.length - 2]);
+			long second = first + Long.parseLong(split[split.length - 1]);
+			
+			return new SensorDataMessage(name, new SensorResult(results), first, second);
+			
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Can't parse msg: " + string);
+		}
+	}
+	
+	private static void addToResults(Map<Sensor, Double> results, String in) {
+		SensorType type = SensorType.values()[in.charAt(0) - '0'];
+		String id = in.substring(1, 4);
+		double value = Double.parseDouble(in.substring(4));
+		results.put(new Sensor(type, id), value);
+	}
+
+	@Override
+	public MessageTypes getType() {
+		return MessageTypes.SENSOR_DATA_MESSAGE;
+	}
+	
+	
 
 }

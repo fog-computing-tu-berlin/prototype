@@ -19,11 +19,10 @@
 
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
+	    <groupId>junit</groupId>
+	    <artifactId>junit</artifactId>
+	    <version>4.12</version>
+	</dependency>
     
     <dependency>
       <groupId>org.zeromq</groupId>
@@ -45,4 +44,32 @@
 	
     
   </dependencies>
+  
+  <build>
+   	<plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <finalName>edge.client</finalName>
+          <archive>
+              <manifest>
+                  <mainClass>fc.mcc.tu_berlin.de.edge.client.App</mainClass>
+              </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <appendAssemblyId>false</appendAssemblyId>
+        </configuration>
+      </plugin>
+   	</plugins>
+  </build>
 </project>

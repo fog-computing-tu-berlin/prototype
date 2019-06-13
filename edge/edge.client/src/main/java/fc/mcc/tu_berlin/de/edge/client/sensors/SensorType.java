@@ -6,7 +6,7 @@ package fc.mcc.tu_berlin.de.edge.client.sensors;
  */
 public enum SensorType {
 	
-	HUMIDITY("humidity", "percent"), TEMPERATURE("temperature", "grad celsius"), UV("ultraviolet","milliwatt");
+	HUMIDITY("humidity", "percent"), TEMPERATURE("temperature", "degree celsius"), UV("ultraviolet", "milliwatt");
 	
 	public final String name;
 	public final String unit;

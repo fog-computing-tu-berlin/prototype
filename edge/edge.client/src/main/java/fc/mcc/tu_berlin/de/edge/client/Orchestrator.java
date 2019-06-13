@@ -1,5 +1,6 @@
 package fc.mcc.tu_berlin.de.edge.client;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.tinkerforge.AlreadyConnectedException;
@@ -28,6 +29,11 @@ public class Orchestrator {
 				ipcon.connect("localhost", 4223);
 			} catch (NetworkException | AlreadyConnectedException e) {
 				e.printStackTrace();
+				try {
+					ipcon.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 				return;
 			}
 		}
@@ -36,11 +42,11 @@ public class Orchestrator {
 		SensorReader sr = new SensorReader(sensors, statusHolder, ipcon);
 		
 
-		Collector collector = new Collector(name, new MessageSender(serverHost, 5555), 50, 50, sr);
+		Collector collector = new Collector(name, new MessageSender(serverHost, 5555, name), 50, 50, sr);
 		Thread collectorThread = new Thread(collector);
 		collectorThread.start();
 		
-		Feedback feedback = new Feedback(new MessageReceiver(5556), statusHolder, button_ID, ipcon, 10000);
+		Feedback feedback = new Feedback(new MessageReceiver(5556, name), statusHolder, button_ID, ipcon, 10000);
 		Thread feedbackThread = new Thread(feedback);
 		feedbackThread.start();
 		

@@ -35,14 +35,16 @@ public class App {
 		
 		Orchestrator orchestrator = new Orchestrator();
 		String[] sensors = Arrays.copyOfRange(args, 3, devMode ? args.length - 1 : args.length);
-		orchestrator.work(args[1], args[2], parseArgsToSensors(sensors), args[0]);
+		
+		String name = args[1].replace(" ", "_");
+		
+		orchestrator.work(name, args[2], parseArgsToSensors(sensors), args[0]);
 	}
 	
 	private static List<Sensor> parseArgsToSensors(String[] args) {
 		List<Sensor> sensors = new LinkedList<Sensor>();
 		
 		for (String s : args) {
-			
 			if(s.length() == 7 && s.startsWith("(") && s.endsWith(")") && s.contains(",") && s.indexOf(',') == s.lastIndexOf(',')){
 				
 				s = s.substring(1, s.length() - 1);
@@ -61,15 +63,11 @@ public class App {
 				
 				sensors.add(new Sensor(st, sa[1]));
 				
-			}else throw new IllegalArgumentException("Wrong declaration for sensor tuple");
+			} else throw new IllegalArgumentException("Wrong declaration for sensor tuple");
 			
 		}
-		
 		System.out.println("Found " + sensors.size() + " sensors!");
 		
 		return sensors;
-		
-		
 	}
-
 }

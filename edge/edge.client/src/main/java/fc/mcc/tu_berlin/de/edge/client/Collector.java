@@ -39,30 +39,24 @@ public class Collector implements Runnable {
 
 	@Override
 	public void run() {
-
 		while(!Thread.interrupted()) {
 			
 			try {
-			
 				sensorResults[index++] = sr.read();
 				
 				if(index == sensorResults.length) {
-					
 					this.accumulateAndSend();
 					index = 0;
-					
 				}
 			
 				Thread.sleep(collectAllMs);
-				
+
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
 		}
-		
 	}
 	
 	public void accumulateAndSend() {
@@ -88,9 +82,5 @@ public class Collector implements Runnable {
 				sensorResults[sensorResults.length - 1].createTime) ;
 		
 		messageSender.send(message);
-		
 	}
-	
-	
-
 }
