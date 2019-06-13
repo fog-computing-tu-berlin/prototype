@@ -87,7 +87,7 @@ public class MessagePersistor {
 	}
 	
 	private boolean loadMessages(String filename, int startIndex) {
-		File file = new File(filename);
+		File file = new File(directory + filename);
 		if(file.exists()) {
 			Scanner sc = null;
 			try {
