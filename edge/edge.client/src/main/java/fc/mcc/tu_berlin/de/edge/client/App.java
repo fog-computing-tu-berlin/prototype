@@ -35,7 +35,10 @@ public class App {
 		
 		Orchestrator orchestrator = new Orchestrator();
 		String[] sensors = Arrays.copyOfRange(args, 3, devMode ? args.length - 1 : args.length);
-		orchestrator.work(args[1], args[2], parseArgsToSensors(sensors), args[0]);
+		
+		String name = args[1].replace(" ", "_");
+		
+		orchestrator.work(name, args[2], parseArgsToSensors(sensors), args[0]);
 	}
 	
 	private static List<Sensor> parseArgsToSensors(String[] args) {

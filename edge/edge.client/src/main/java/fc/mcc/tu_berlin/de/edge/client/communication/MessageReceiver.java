@@ -15,7 +15,8 @@ public class MessageReceiver extends MessageHandler implements Runnable {
 	
 	private final int PORT;
 	
-	public MessageReceiver(int PORT) {
+	public MessageReceiver(int PORT, String name) {
+		super("receiver_" + name);
 		this.PORT = PORT;
 		new Thread(this).start();
 	}
@@ -52,32 +53,15 @@ public class MessageReceiver extends MessageHandler implements Runnable {
 	
 	private void addToMessages(String msg) {
 		
-		boolean needsWater = false;
-		short uv;
-		try {
-			short s = Short.parseShort(msg);
-			if(s >= 0 && s <= 5) {
-				if(s >= 3) {
-					needsWater = true;
-					s = (short) (s - 3);
-				}
-				uv = s;
-			}else {
-				throw new IllegalArgumentException();
-			}
-		}catch (Exception e) {
-			System.out.println("Can't parse msg: " + msg); return;
-		}
-		
 		synchronized (accessHelper) {
-			this.messages.add(new CommandMessage(needsWater, uv));
+			this.add(CommandMessage.parseMessage(msg));
 			accessHelper.notifyAll();
 		}
 	}
 	
 	public Message getOldestMessage(long wait) {
 		synchronized (accessHelper) {
-			if(messages.isEmpty()) {
+			if(this.isEmpty()) {
 				try {
 					accessHelper.wait(wait);
 				} catch (InterruptedException e) {
@@ -85,7 +69,7 @@ public class MessageReceiver extends MessageHandler implements Runnable {
 					e.printStackTrace();
 				}
 			}
-			return this.messages.poll();
+			return this.poll();
 		}
 	}
 	

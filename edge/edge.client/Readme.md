@@ -1,4 +1,11 @@
 ## To run that:
+
+- build: `mvn clean package`
+- run: `java -jar -jar target\edge.client.jar 192.168.99.100 myplant vTy (h,HF1) (u,xkb) (t,EKx)`
+- run in dev mode (mock sensors): `java -jar -jar target\edge.client.jar 192.168.99.100 myplant vTy (h,HF1) (u,xkb) (t,EKx) DEV`
+
+
+
 Add following arguments: ip name button_id tuple_of_sensors [dev mode]
 
 tuple_of_sensors (sensor_type,sensor_id)

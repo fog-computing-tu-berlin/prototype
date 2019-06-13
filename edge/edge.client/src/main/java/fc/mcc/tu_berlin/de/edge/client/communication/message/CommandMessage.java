@@ -16,6 +16,27 @@ public class CommandMessage implements Message {
 		this.needsWater = needsWater;
 		this.uv = uv;
 	}
+	
+	public static CommandMessage parseMessage(String in) {
+		boolean needsWater = false;
+		short uv;
+		try {
+			short s = Short.parseShort(in);
+			if(s >= 0 && s <= 5) {
+				if(s >= 3) {
+					needsWater = true;
+					s = (short) (s - 3);
+				}
+				uv = s;
+			}else {
+				throw new IllegalArgumentException();
+			}
+		}catch (Exception e) {
+			System.out.println("Can't parse msg: " + in); 
+			return null;
+		}
+		return new CommandMessage(needsWater, uv);
+	}
 
 	@Override
 	public String toJson() {
