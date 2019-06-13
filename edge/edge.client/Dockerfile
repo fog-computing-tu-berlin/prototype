@@ -11,5 +11,3 @@ FROM openjdk:8-jre-alpine
 EXPOSE 5556
 COPY --from=edge_client /app/ /app/
 CMD ["sh", "-c", "java -jar -jar app/edge.client.jar ${Server_IP} myplant vTy \\(h,HF1\\) \\(u,xkb\\) \\(t,EKx\\) DEV"]
-# (u,xkb) (t,EKx) DEV"]
-#CMD ["java", "-jar", "-jar", "app/edge.client.jar", "${Server_IP}", "myplant", "vTy", "(h,HF1)", "(u,xkb)", "(t,EKx)", "DEV"]
