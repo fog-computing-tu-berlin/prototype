@@ -37,11 +37,12 @@ public class MessagePersistor {
 			moveMessagesToZero();
 		}
 		loadMessages();
-		this.nextMessage = this.pointer;
+		this.nextMessage = this.pointer + messages.size();
 	}
 	
 	private long loadPointer() {
-		File f = new File(pointerfile);
+		File tmp_f = new File(pointerfile + "_tmp");
+		File f = tmp_f.exists() ? tmp_f : new File(pointerfile);
 		if(f.exists()) {
 			Scanner sc = null;
 			try {
@@ -163,9 +164,16 @@ public class MessagePersistor {
 	}
 	
 	private void writePointer(long pointer) throws IOException {
-		FileWriter fileWriter = new FileWriter(pointerfile);
+		File old_f = new File(pointerfile);
+		boolean wasPresent = old_f.exists();
+		String name = wasPresent ? pointerfile + "_tmp" : pointerfile;
+		FileWriter fileWriter = new FileWriter(name);
 		fileWriter.write(pointer + System.lineSeparator());
 		fileWriter.close();
+		if(wasPresent) {
+			old_f.delete();
+			new File(name).renameTo(old_f);
+		}
 	}
 
 	private String getFileFromCounter(long counter) {

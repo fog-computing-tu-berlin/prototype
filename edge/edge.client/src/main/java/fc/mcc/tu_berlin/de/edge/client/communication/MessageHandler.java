@@ -1,10 +1,7 @@
 package fc.mcc.tu_berlin.de.edge.client.communication;
 
 import java.io.File;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 
-import fc.mcc.tu_berlin.de.edge.client.communication.message.CommandMessage;
 import fc.mcc.tu_berlin.de.edge.client.communication.message.Message;
 import fc.mcc.tu_berlin.de.edge.client.communication.message.MessagePersistor;
 

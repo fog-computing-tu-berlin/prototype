@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,39 +28,85 @@ public class MessagePersistorTest {
 		
 		MessagePersistor mp = new MessagePersistor(path);
 		
-		for (int i = 0; i < 150; i++) {
-			mp.add(genDemoMessage(i));
-		}
+		add(mp, 0, 60);
 
-		mp = null;
-		System.gc();
+		mp = newMP(mp, 0);
 		
-		mp = new MessagePersistor(path);
+		poll(mp, 0, 40);
 		
-		for (int i = 0; i < 120; i++) {
-			Message m = mp.poll();
-			compareMesages(genDemoMessage(i).toShortMessage(), m.toShortMessage());
-		}
+		assertEquals(20, mp.size());
 		
-		mp = null;
-		System.gc();
+		mp = newMP(mp, 0);
+		
+		add(mp, 60, 150);
+		
+		mp = newMP(mp, 0);
+		
+		assertEquals(150 - 60 + 20, mp.size());
+		
+		add(mp, 150, 3005);
+		
+		mp = newMP(mp, 0);
+		
+		assertEquals(2965, mp.size());
 		
 		File file = new File(path);
-		assertEquals(2, file.listFiles().length);
+		assertEquals(32, file.listFiles().length);
 		
-		mp = new MessagePersistor(path);
+		poll(mp, 40, 150);
+		mp = newMP(mp, 100);
 		
-		for (int i = 120; i < 150; i++) {
-			Message m_0 = mp.peek();
-			Message m = mp.poll();
-			assertEquals(m_0, m);
-			compareMesages(genDemoMessage(i).toShortMessage(), m.toShortMessage());
-		}
+		file = new File(path);
+		assertEquals(31, file.listFiles().length);
+		
+		poll(mp, 150, 3005);
 		
 		for (int i = 0; i < 100; i++) {
 			assertNull(mp.poll());
 		}
 		
+	}
+	
+	private void add(MessagePersistor mp, int a, int b) {
+		for (int i = a; i < b; i++) {
+			mp.add(genDemoMessage(i));
+		}
+	}
+	
+	private void poll(MessagePersistor mp, int a, int b) {
+		for (int i = a; i < b; i++) {
+			Message m_0 = mp.peek();
+			Message m = mp.poll();
+			assertEquals(m_0, m);
+			compareMesages(genDemoMessage(i).toShortMessage(), m.toShortMessage());
+		}
+	}
+	
+	private MessagePersistor newMP(MessagePersistor oldMP, int offset) {
+		long nextM = getLongFromField("nextMessage", oldMP);
+		long pointer = getLongFromField("pointer", oldMP);
+		int size = oldMP.size();
+		
+		MessagePersistor new_mp = new MessagePersistor(path);
+		
+		long nextM1 = getLongFromField("nextMessage", new_mp);
+		long pointer1 = getLongFromField("pointer", new_mp);
+		
+		assertEquals(nextM - offset, nextM1);
+		assertEquals(pointer - offset, pointer1);
+		assertEquals(new_mp.size(), size);
+		return new_mp;
+	}
+	
+	private long getLongFromField(String field, MessagePersistor obj) {
+		try {
+			Field f = MessagePersistor.class.getDeclaredField(field);
+			f.setAccessible(true);
+			return f.getLong(obj);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return obj.hashCode();
+		}
 	}
 	
 	private void compareMesages(String a, String b) {
@@ -93,6 +140,7 @@ public class MessagePersistorTest {
 	@Before
 	public void clean() {
 		File f = new File(path);
+		if(!f.exists()) return;
 		File[] files = f.listFiles();
 		for (File file : files) {
 			file.delete();
