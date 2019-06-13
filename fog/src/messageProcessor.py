@@ -1,12 +1,18 @@
 from reportMessage import ReportMessage
-from plantProcessor import PlantProcessor
-from weatherProvider import WeatherProvider
-from plantRecipe import PlantRecipe
+from cloudUploadHandler import CloudUploaderHandler
+from controlMessageHandler import ControlMessageHandler
+
+import pickle
 
 
 class MessageProcessor:
-    def __init__(self) -> None:
+    cloud_upload_handler: CloudUploaderHandler
+    control_message_handler: ControlMessageHandler
+
+    def __init__(self, cloud_upload_handler: CloudUploaderHandler, control_message_handler: ControlMessageHandler) -> None:
         super().__init__()
+        self.cloud_upload_handler = cloud_upload_handler
+        self.control_message_handler = control_message_handler
 
     async def process_message(self, message: str) -> str:
         try:
@@ -14,8 +20,10 @@ class MessageProcessor:
         except ValueError:
             return "Error parsing Message"
 
-        plant_processor = PlantProcessor(WeatherProvider(), PlantRecipe("Unknown"))
+        serialized = pickle.dumps(parsed_message)
 
-        report = str(await plant_processor.water_status(parsed_message.humidity)) + str(await plant_processor.uv_status(parsed_message.uv))
+        await self.control_message_handler.publish(serialized)
+        await self.cloud_upload_handler.publish(serialized)
 
-        return report
+        # 1 -> Confirm the received message
+        return str(1)

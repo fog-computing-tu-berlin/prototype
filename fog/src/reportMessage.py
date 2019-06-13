@@ -1,3 +1,6 @@
+import json
+
+
 class ReportMessage:
     plant_id: str
     humidity: float
@@ -25,3 +28,7 @@ class ReportMessage:
         self.uv_sensor_id = message_split[3][0:3]
         self.start_time = int(message_split[4])
         self.end_time = self.start_time + int(message_split[5])
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__,
+                          sort_keys=True, indent=4)

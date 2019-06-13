@@ -1,5 +1,5 @@
 import asyncio
-import messageProcessor as mp
+from messageProcessor import MessageProcessor
 import zmq
 import zmq.asyncio
 import time
@@ -7,28 +7,20 @@ import time
 context = zmq.asyncio.Context()
 
 
-async def recv_and_process() -> None:
+async def recv_and_process(message_processor: MessageProcessor) -> None:
     socket = context.socket(zmq.REP)
     socket.bind("tcp://*:5555")
-    messageProcessor = mp.MessageProcessor()
 
-    run = True
-
-    while run:
+    while True:
         try:
             message = await socket.recv_string()
             print("Received request: ", message)
-            reply = await messageProcessor.process_message(message)
-            await socket.send_string(str(reply))
+            reply = await message_processor.process_message(message)
+            await socket.send(bytes(reply, 'UTF-8'), zmq.NOBLOCK)
         except KeyboardInterrupt:
-            run = False
+            break
         except zmq.ZMQError:
             time.sleep(60)
-
-if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(recv_and_process())
-    loop.close()
 
 
 # Example for Multithreading this:
