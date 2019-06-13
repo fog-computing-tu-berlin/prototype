@@ -58,7 +58,12 @@ public class CommandMessage implements Message {
 	 */
 	@Override
 	public String toShortMessage() {
-		return "" + (needsWater ? 3 : 0) + uv;
+		return "" + ((needsWater ? 3 : 0) + uv);
+	}
+
+	@Override
+	public MessageTypes getType() {
+		return MessageTypes.COMMAND_MESSAGE;
 	}
 	
 }

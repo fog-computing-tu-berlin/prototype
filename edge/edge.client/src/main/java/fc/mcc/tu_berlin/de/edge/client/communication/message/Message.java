@@ -10,6 +10,8 @@ public interface Message {
 	
 	public String toShortMessage();
 	
+	public MessageTypes getType();
+	
 	static Message parseMessage(String in) {
 		try {
 			String[] parts = in.split(";");

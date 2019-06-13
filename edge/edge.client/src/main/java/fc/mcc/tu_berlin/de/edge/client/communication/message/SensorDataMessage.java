@@ -74,6 +74,11 @@ public class SensorDataMessage implements Message {
 		double value = Double.parseDouble(in.substring(4));
 		results.put(new Sensor(type, id), value);
 	}
+
+	@Override
+	public MessageTypes getType() {
+		return MessageTypes.SENSOR_DATA_MESSAGE;
+	}
 	
 	
 

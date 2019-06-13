@@ -14,12 +14,11 @@ import fc.mcc.tu_berlin.de.edge.client.communication.message.MessagePersistor;
  */
 public abstract class MessageHandler {
 
-	protected final Queue<Message> messages = new LinkedBlockingQueue<Message>();
-//	private final MessagePersistor messages;
+//	protected final Queue<Message> messages = new LinkedBlockingQueue<Message>();
+	private final MessagePersistor messages;
 	
 	public MessageHandler(String name) {
-//		messages = new MessagePersistor("data" + File.separatorChar + name);
-		
+		messages = new MessagePersistor("data" + File.separatorChar + name + File.separatorChar);
 	}
 	
 	protected void add(Message message) {
