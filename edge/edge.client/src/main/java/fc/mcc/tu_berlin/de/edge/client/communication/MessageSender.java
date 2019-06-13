@@ -37,7 +37,7 @@ public class MessageSender extends MessageHandler implements Runnable {
 					
 					if(message != null) {
 //						System.out.println(message.toJson());
-						System.out.println("Send message: [" + message.toShortMessage() + "]");
+//						System.out.println("Send message: [" + message.toShortMessage() + "]");
 						requester.send(message.toShortMessage(), 0);
 						String reply = requester.recvStr(0);
 						if(!reply.equals("1")) {
