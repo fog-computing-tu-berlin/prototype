@@ -22,12 +22,12 @@ socket.connect("tcp://localhost:%s" % port)
 # socket.connect("tcp://localhost:%s" % port1)
 # Subscribe to zipcode, default is NYC, 10001
 topicfilter = "10001"
-socket.setsockopt(zmq.SUBSCRIBE, b"10001")
+socket.setsockopt(zmq.SUBSCRIBE, b"")
 # Process 5 updates
 total_value = 0
-for update_nbr in range(5):
+while True:
     string = socket.recv()
     topic, messagedata = string.split()
     total_value += int(messagedata)
     print(topic, messagedata)
-print("Average messagedata value for topic '%s' was %dF" % (topicfilter, total_value / update_nbr))
+#print("Average messagedata value for topic '%s' was %dF" % (topicfilter, total_value / update_nbr))
