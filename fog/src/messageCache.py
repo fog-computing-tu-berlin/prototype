@@ -30,7 +30,7 @@ class MessageCache:
         self.__sub_socket.setsockopt_string(zmq.SUBSCRIBE, '')
 
     async def __add_to_cache(self, message: bytes):
-        await self.__pub_socket.send(message, zmq.NOBLOCK)
+        await self.__pub_socket.send(message)
 
     async def publish(self, message: bytes) -> None:
         await self.__add_to_cache(message)
