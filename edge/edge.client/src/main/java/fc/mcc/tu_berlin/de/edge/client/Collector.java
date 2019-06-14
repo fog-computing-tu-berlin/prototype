@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import fc.mcc.tu_berlin.de.edge.client.communication.MessageHandler;
 import fc.mcc.tu_berlin.de.edge.client.communication.MessageSender;
 import fc.mcc.tu_berlin.de.edge.client.communication.message.SensorDataMessage;
 import fc.mcc.tu_berlin.de.edge.client.sensors.Sensor;
@@ -22,14 +23,12 @@ public class Collector implements Runnable {
 	private final SensorResult[] sensorResults;
 	private final SensorReader sr;
 	private int index = 0;
-	private String name;
 	
-	public Collector(String name, MessageSender messageSender, int collectAllMs, int sendAllXMeasurements, SensorReader sr) {
+	public Collector(MessageSender messageSender, int collectAllMs, int sendAllXMeasurements, SensorReader sr) {
 		super();
 		this.messageSender = messageSender;
 		this.collectAllMs = collectAllMs;
 		sensorResults = new SensorResult[sendAllXMeasurements];
-		this.name = name;
 		this.sr = sr;
 	}
 	
@@ -76,7 +75,7 @@ public class Collector implements Runnable {
 		}
 		
 		SensorDataMessage message = new SensorDataMessage(
-				this.name,
+				MessageHandler.getId(),
 				new SensorResult(results), 
 				sensorResults[0].createTime, 
 				sensorResults[sensorResults.length - 1].createTime) ;
