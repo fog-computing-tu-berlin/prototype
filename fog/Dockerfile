@@ -9,6 +9,8 @@ RUN pip install --no-cache-dir  -r requirements.txt
 
 EXPOSE 5000/tcp
 EXPOSE 5555/tcp
+EXPOSE 5556/tcp
+EXPOSE 5557/tcp
 
 COPY src /src/
 
