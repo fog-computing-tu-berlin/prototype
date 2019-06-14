@@ -5,10 +5,17 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Collectors;
 
+/**
+ * 
+ * @author Fabian Lehmann
+ *
+ */
 public class MessagePersistor {
 	
 	private final Queue<Message> messages = new LinkedBlockingQueue<Message>();

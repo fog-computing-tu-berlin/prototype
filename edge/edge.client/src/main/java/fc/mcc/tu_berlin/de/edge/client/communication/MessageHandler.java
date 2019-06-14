@@ -10,8 +10,11 @@ import fc.mcc.tu_berlin.de.edge.client.communication.message.MessagePersistor;
  *
  */
 public abstract class MessageHandler {
+	
+	public static final int SERVER_REQ_PORT = 5555;
 
-//	protected final Queue<Message> messages = new LinkedBlockingQueue<Message>();
+	private static String id;
+	
 	private final MessagePersistor messages;
 	
 	public MessageHandler(String name) {
@@ -32,5 +35,29 @@ public abstract class MessageHandler {
 
 	protected Message peek() {
 		return messages.peek();
+	}
+	
+	private static Object id_helper = new Object();
+	
+	public static void setId(String id) {
+		synchronized (id_helper) {
+			if(id == null) {
+				MessageHandler.id = id;
+				id_helper.notifyAll();
+			}
+		}
+	}
+	
+	public static String getId() {
+		synchronized (id_helper) {
+			while(id == null) {
+				try {
+					id_helper.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			return id;
+		}
 	}
 }

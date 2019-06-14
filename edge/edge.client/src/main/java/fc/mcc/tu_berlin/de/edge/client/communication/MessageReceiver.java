@@ -6,6 +6,7 @@ import org.zeromq.ZMQ.Socket;
 
 import fc.mcc.tu_berlin.de.edge.client.communication.message.CommandMessage;
 import fc.mcc.tu_berlin.de.edge.client.communication.message.Message;
+import zmq.ZMQ;
 
 /**
  * @author Fabian Lehmann
@@ -29,21 +30,22 @@ public class MessageReceiver extends MessageHandler implements Runnable {
 		try {
 
 			ZContext context = new ZContext();
-			Socket responder = context.createSocket(SocketType.REP);
+			Socket subscriber = context.createSocket(SocketType.SUB);
 		
-	        responder.connect("tcp://0.0.0.0:" + PORT);
+	        subscriber.connect("tcp://0.0.0.0:" + PORT);
+	        subscriber.subscribe(MessageHandler.getId().getBytes(ZMQ.CHARSET));
 	        
 	        while (!Thread.interrupted()) {
 	            //  Wait for next request from client
-	            byte[] request = responder.recv(0);
+	            byte[] request = subscriber.recv(0);
 	            String string = new String(request);
 	            System.out.println("Received request: ["+string+"].");
 	            addToMessages(string);
 	
-	            responder.send("1".getBytes(), 0);
+	            subscriber.send("1".getBytes(), 0);
 	        }
 	        
-	        responder.close();
+	        subscriber.close();
 	        context.close();
 	        
 		}catch(Exception e) {

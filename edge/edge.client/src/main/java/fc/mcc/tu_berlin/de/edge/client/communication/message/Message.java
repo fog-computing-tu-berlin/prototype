@@ -19,6 +19,7 @@ public interface Message {
 			switch (type){
 				case COMMAND_MESSAGE: return CommandMessage.parseMessage(parts[1]);
 				case SENSOR_DATA_MESSAGE: return SensorDataMessage.parseMessage(parts[1]);
+				case REGISTER_MESSAGE: return RegisterMessage.parseMessage(parts[1]);
 				default: throw new IllegalArgumentException("no return for " + type);
 			}
 		}catch(Exception e) {
@@ -29,7 +30,7 @@ public interface Message {
 	
 	public enum MessageTypes {
 		
-		COMMAND_MESSAGE, SENSOR_DATA_MESSAGE;
+		COMMAND_MESSAGE, SENSOR_DATA_MESSAGE, REGISTER_MESSAGE;
 		
 	}
 	
