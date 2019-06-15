@@ -5,8 +5,8 @@ import json
 class DatabaseConnector:
     def __init__(self, config: Config) -> None:
         super().__init__()
-        self.__url = config.get_database_rest_url()
-        self.__http_client_session = config.get_http_client_session()
+        self.__url = config.DATABASE_REST_URL
+        self.__http_client_session = config.HTTP_CLIENT_SESSION
 
     async def create_new_edge_id(self, plant: str) -> str:
         data = json.dumps({'plant': plant})
