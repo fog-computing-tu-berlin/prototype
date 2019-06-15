@@ -17,12 +17,12 @@ def main():
     database_connector = DatabaseConnector(config)
 
     edge_id_generator = EdgeIDGenerator(database_connector)
-    server_id_receiver = ServerIDReceiver(edge_id_generator)
+    server_id_receiver = ServerIDReceiver(config, edge_id_generator)
     loop.create_task(server_id_receiver.recv_and_process())
 
     sensor_submitter = SensorSubmitter(database_connector)
     loop.create_task(sensor_submitter.process_loop())
-    server_fog_receiver = ServerFogReceiver(sensor_submitter)
+    server_fog_receiver = ServerFogReceiver(config, sensor_submitter)
     loop.create_task(server_fog_receiver.recv_and_process())
 
     loop.run_forever()

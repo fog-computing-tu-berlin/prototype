@@ -19,7 +19,7 @@ class DatabaseConnector:
             return str(resp_content[0]['id'])
 
     async def create_new_sensor_entry(self, data: str) -> str:
-        url = self.__url + '/sensor'
+        url = self.__url + 'sensor'
         headers = {'Accept': 'application/json', 'Content-type': 'application/json'}
         async with self.__http_client_session.post(url=url, data=data, headers=headers) as resp:
             if resp.status != 201:

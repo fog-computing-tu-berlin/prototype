@@ -1,7 +1,8 @@
 from asyncio import sleep
-from server.serverEdgeController import ServerEdgeController
 from datetime import datetime, timedelta
+
 from core.config import Config
+from server.serverEdgeController import ServerEdgeController
 
 
 class ControlSubmitter:
@@ -16,6 +17,7 @@ class ControlSubmitter:
         self.__async_loop = config_instance.get_async_loop()
         self.__update_message_timeout = config_instance.get_control_message_ticker_update_timeout()
         self.__tick_rate = config_instance.get_control_message_tick_rate()
+        self.is_debug = config_instance.is_debug_logging()
 
     async def update_message(self, new_message: str):
         self.last_message_update = datetime.now()
@@ -39,4 +41,6 @@ class ControlSubmitter:
 
     async def __send_message(self, message: str):
         await self.__server_edge_controller.publish_for_edge(self.__edge_id, message)
-        print("Send control message: " + message)
+
+        if self.is_debug:
+            print("Send control message: " + message)

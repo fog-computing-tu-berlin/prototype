@@ -24,5 +24,11 @@ class Config:
     def get_edge_id_generator_listen_port(self) -> int:
         return 5557
 
-    def get_edge_id_upstream_url(self):
+    def get_edge_id_upstream_url(self) -> str:
         return 'tcp://localhost:5559'
+
+    def is_debug_logging(self) -> bool:
+        return True
+
+    def get_edge_receiver_listen_port(self) -> int:
+        return 5555

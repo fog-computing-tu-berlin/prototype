@@ -1,5 +1,6 @@
 import zmq
 import zmq.asyncio
+
 from core.config import Config
 
 
@@ -20,7 +21,9 @@ class ServerIDReceiver:
         socket_rep.bind('tcp://*:' + str(self.__config.get_edge_id_generator_listen_port()))
         while True:
             message = await socket_rep.recv()
-            print("Received request: ", message)
+
+            if self.__config.is_debug_logging():
+                print("EdgeIDRelay received request: ", message)
 
             await socket_req.send(message)
             edge_id = await socket_req.recv()

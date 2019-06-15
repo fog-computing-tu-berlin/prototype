@@ -1,10 +1,11 @@
-import zmq
-import zmq.asyncio
 import pickle
 
+import zmq
+import zmq.asyncio
+
+from core.config import Config
 from core.messageCache import MessageCache
 from core.reportMessage import ReportMessage
-from core.config import Config
 
 
 class CloudUploaderHandler(MessageCache):
@@ -13,8 +14,10 @@ class CloudUploaderHandler(MessageCache):
     def __init__(self, config: Config) -> None:
         super().__init__(None)
 
+        # noinspection PyUnresolvedReferences
         self.__socket = self._context.socket(zmq.REQ)
         self.__socket.connect(config.get_cloud_upload_url())
+        self.__debug_logging = config.is_debug_logging()
 
     async def publish(self, message: bytes) -> None:
         return await super().publish(bytes(message))
@@ -26,4 +29,6 @@ class CloudUploaderHandler(MessageCache):
         await self.__socket.send_string(message.to_json())
         # Just await, but ignore the return value
         await self.__socket.recv_string()
-        print("Uploaded: " + message.to_json())
+
+        if self.__debug_logging:
+            print("Uploaded: " + message.to_json())

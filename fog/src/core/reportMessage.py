@@ -10,7 +10,7 @@ class ReportMessage:
         if len(message_split) != 6:
             raise ValueError("Message as an unknown amount of values")
 
-        self.edge_id = message_split[0]
+        self.edge_id = int(message_split[0])
         self.humidity = float(message_split[1][4:]) / 100
         self.humidity_sensor_id = message_split[1][0:3]
         self.temperature = float(message_split[2][4:]) / 100
