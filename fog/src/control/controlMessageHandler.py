@@ -1,13 +1,11 @@
-import zmq
-import zmq.asyncio
 import pickle
-from plantProcessor import PlantProcessor
-from plantRecipe import PlantRecipe
-from weatherProvider import WeatherProvider
-from reportMessage import ReportMessage
+from plant.plantProcessor import PlantProcessor
+from plant.plantRecipe import PlantRecipe
+from weather.weatherProvider import WeatherProvider
+from core.reportMessage import ReportMessage
 
-from messageCache import MessageCache
-from controlSubmitterHolder import ControlSubmitterHolder
+from core.messageCache import MessageCache
+from control.controlSubmitterHolder import ControlSubmitterHolder
 
 
 class ControlMessageHandler(MessageCache):
@@ -22,9 +20,6 @@ class ControlMessageHandler(MessageCache):
         if weather_provider is None:
             weather_provider = WeatherProvider()
         self.__weather_provider = weather_provider
-
-        # TODO We need some kind of pub-sub here
-        # Doing REQ-REP to an Edge does not really make any sense here
 
     async def process_message(self, message: bytearray) -> None:
         report_message = pickle.loads(message)

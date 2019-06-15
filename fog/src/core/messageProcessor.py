@@ -1,6 +1,6 @@
-from reportMessage import ReportMessage
-from cloudUploadHandler import CloudUploaderHandler
-from controlMessageHandler import ControlMessageHandler
+from core.reportMessage import ReportMessage
+from cloud.cloudUploadHandler import CloudUploaderHandler
+from control.controlMessageHandler import ControlMessageHandler
 
 import pickle
 

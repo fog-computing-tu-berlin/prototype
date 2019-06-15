@@ -1,7 +1,7 @@
-from weatherProvider import WeatherProvider
-from plantRecipe import PlantRecipe
+from weather.weatherProvider import WeatherProvider
+from plant.plantRecipe import PlantRecipe
 from random import randint
-from edgeControlMessageConstants import WATER_MORE, UV_LESS, UV_MORE, UV_NO_CHANGE, WATER_NO_CHANGE
+from control.controlMessageConstants import WATER_MORE, UV_LESS, UV_MORE, UV_NO_CHANGE, WATER_NO_CHANGE
 
 
 class PlantProcessor:

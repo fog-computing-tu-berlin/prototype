@@ -1,7 +1,7 @@
 from asyncio import sleep
-from serverEdgeController import ServerEdgeController
+from server.serverEdgeController import ServerEdgeController
 from datetime import datetime, timedelta
-from config import Config
+from core.config import Config
 
 
 class ControlSubmitter:

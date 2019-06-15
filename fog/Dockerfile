@@ -14,4 +14,4 @@ EXPOSE 5557/tcp
 
 COPY src /src/
 
-CMD python /src/server.py
+CMD python /src/index.py

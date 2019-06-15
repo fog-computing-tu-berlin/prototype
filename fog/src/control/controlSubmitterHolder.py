@@ -1,6 +1,6 @@
-from controlSubmitter import ControlSubmitter
-from config import Config
-from serverEdgeController import ServerEdgeController
+from control.controlSubmitter import ControlSubmitter
+from core.config import Config
+from server.serverEdgeController import ServerEdgeController
 from asyncio import sleep
 from datetime import timedelta, datetime
 

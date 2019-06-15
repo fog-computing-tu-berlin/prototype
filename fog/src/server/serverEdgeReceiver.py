@@ -1,5 +1,4 @@
-import asyncio
-from messageProcessor import MessageProcessor
+from core.messageProcessor import MessageProcessor
 import zmq
 import zmq.asyncio
 import time

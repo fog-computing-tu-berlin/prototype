@@ -1,12 +1,12 @@
-import serverEdgeReceiver
+from server import serverEdgeReceiver
 import asyncio
 import sys
-from cloudUploadHandler import CloudUploaderHandler
-from controlMessageHandler import ControlMessageHandler
-from messageProcessor import MessageProcessor
-from serverEdgeController import ServerEdgeController
-from controlSubmitterHolder import ControlSubmitterHolder
-from config import Config
+from cloud.cloudUploadHandler import CloudUploaderHandler
+from control.controlMessageHandler import ControlMessageHandler
+from core.messageProcessor import MessageProcessor
+from server.serverEdgeController import ServerEdgeController
+from control.controlSubmitterHolder import ControlSubmitterHolder
+from core.config import Config
 
 
 def main():
