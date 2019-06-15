@@ -13,9 +13,8 @@ class ServerFogReceiver:
         self.__sensor_submitter = sensor_submitter
 
     async def recv_and_process(self):
-        # noinspection PyUnresolvedReferences
-        socket = self.__context.socket(zmq.REP)
-        socket.bind('tcp://*:' + str(self.__config.get_fog_receiver_listen_port()))
+        socket = self.__setup_socket()
+
         while True:
             message = await socket.recv()
             message = str(message, 'UTF-8')
@@ -25,3 +24,12 @@ class ServerFogReceiver:
 
             await self.__sensor_submitter.publish(message)
             await socket.send(bytes('0', 'UTF-8'))
+
+    # noinspection PyUnresolvedReferences
+    def __setup_socket(self) -> zmq.asyncio.Socket:
+        socket = self.__context.socket(zmq.REP)
+        socket.setsockopt(zmq.SNDHWM, self.__config.get_fog_receiver_max_queue_length())
+        socket.setsockopt(zmq.RCVHWM, self.__config.get_fog_receiver_max_queue_length())
+        socket.bind('tcp://*:' + str(self.__config.get_fog_receiver_listen_port()))
+
+        return socket
