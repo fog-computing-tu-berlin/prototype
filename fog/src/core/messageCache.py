@@ -18,7 +18,7 @@ class MessageCache:
 
     # noinspection PyUnresolvedReferences
     def __setup_pub_socket(self, url: str, max_queue_length: int) -> zmq.asyncio.Socket:
-        socket = self._context.socket(zmq.PUB)
+        socket = self._context.socket(zmq.PUSH)
         socket.setsockopt(zmq.SNDHWM, max_queue_length)
         socket.setsockopt(zmq.RCVHWM, max_queue_length)
         socket.bind(url)
@@ -27,11 +27,10 @@ class MessageCache:
 
     # noinspection PyUnresolvedReferences
     def __setup_sub_socket(self, url: str, max_queue_length: int) -> zmq.asyncio.Socket:
-        socket = self._context.socket(zmq.SUB)
+        socket = self._context.socket(zmq.PULL)
         socket.connect(url)
         socket.setsockopt(zmq.SNDHWM, max_queue_length)
         socket.setsockopt(zmq.RCVHWM, max_queue_length)
-        socket.setsockopt_string(zmq.SUBSCRIBE, '')
 
         return socket
 

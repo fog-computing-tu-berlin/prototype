@@ -25,8 +25,21 @@ class ServerIDReceiver:
             await socket_req.send(message)
             try:
                 edge_id = await socket_req.recv()
-                await socket_rep.send(edge_id, flags=zmq.NOBLOCK)
+                await socket_rep.send(edge_id)
             except zmq.error.Again as e:
+                # TODO Issue
+                # The following scenario causes a trackback:
+                # Traceback (most recent call last):
+                #   File "C:\repos\Fog-Computing\fog\src\server\serverEdgeIDRelay.py", line 27, in recv_and_process
+                #     edge_id = await socket_req.recv()
+                #   File "C:\repos\Fog-Computing\fog\venv\lib\site-packages\zmq\_future.py", line 433, in _handle_recv
+                #     result = recv(**kwargs)
+                #   File "zmq\backend\cython\socket.pyx", line 788, in zmq.backend.cython.socket.Socket.recv
+                #   File "zmq\backend\cython\socket.pyx", line 824, in zmq.backend.cython.socket.Socket.recv
+                #   File "zmq\backend\cython\socket.pyx", line 191, in zmq.backend.cython.socket._recv_copy
+                #   File "zmq\backend\cython\socket.pyx", line 186, in zmq.backend.cython.socket._recv_copy
+                #   File "zmq\backend\cython\checkrc.pxd", line 19, in zmq.backend.cython.checkrc._check_rc
+                ## This happens when we request ids -> timeout -> request new ids -> get the answer for the first request --> above stacktrace
                 await socket_rep.send_string('Upstream timout')
 
     # noinspection PyUnresolvedReferences
@@ -46,6 +59,7 @@ class ServerIDReceiver:
         socket_req.setsockopt(zmq.SNDTIMEO, self.__config.get_cloud_id_relay_cloud_timeout())
         socket_req.setsockopt(zmq.REQ_CORRELATE, 1)
         socket_req.setsockopt(zmq.REQ_RELAXED, 1)
+        socket_req.setsockopt(zmq.LINGER, 0)
         socket_req.setsockopt(zmq.SNDHWM, self.__config.get_edge_id_relay_max_queue_length())
         socket_req.setsockopt(zmq.RCVHWM, self.__config.get_edge_id_relay_max_queue_length())
 
