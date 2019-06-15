@@ -12,7 +12,7 @@ class ServerIDReceiver:
 
     async def recv_and_process(self):
         socket = self.context.socket(zmq.REP)
-        socket.bind("tcp://*:5557")
+        socket.bind("tcp://*:5559")
         while True:
             #  Wait for next request from client
             message = await socket.recv()

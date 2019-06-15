@@ -18,5 +18,11 @@ class Config:
     def get_control_message_ticker_update_timeout(self) -> int:
         return 3600
 
-    def get_cloud_url(self):
+    def get_cloud_upload_url(self):
         return 'tcp://localhost:5558'
+
+    def get_edge_id_generator_listen_port(self) -> int:
+        return 5557
+
+    def get_edge_id_upstream_url(self):
+        return 'tcp://localhost:5559'

@@ -14,7 +14,7 @@ class CloudUploaderHandler(MessageCache):
         super().__init__(None)
 
         self.__socket = self._context.socket(zmq.REQ)
-        self.__socket.connect(config.get_cloud_url())
+        self.__socket.connect(config.get_cloud_upload_url())
 
     async def publish(self, message: bytes) -> None:
         return await super().publish(bytes(message))
