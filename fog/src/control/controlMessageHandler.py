@@ -14,7 +14,7 @@ class ControlMessageHandler(MessageCache):
     __weather_provider: WeatherProvider
 
     def __init__(self, control_submitter_holder: ControlSubmitterHolder, config: Config, weather_provider: WeatherProvider = None) -> None:
-        super().__init__(None)
+        super().__init__(config.get_internal_message_cache_max_queue_length())
 
         self.control_submitter_holder = control_submitter_holder
         self.is_debug = config.is_debug_logging()

@@ -31,5 +31,5 @@ class ControlSubmitterHolder:
             await sleep(1)
             control_submitters = self.control_submitters.copy().items()
             for edge_id, control_submitter in control_submitters:
-                if control_submitter.last_message_update + timedelta(seconds=self.config_instance.get_control_message_ticker_update_timeout()) < datetime.now():
+                if control_submitter.last_message_update + timedelta(milliseconds=self.config_instance.get_control_message_ticker_update_timeout()) < datetime.now():
                     del self.control_submitters[edge_id]

@@ -33,7 +33,7 @@ class ControlSubmitter:
     async def __ticker(self, tick_rate: int):
         self.__is_ticker_running = True
 
-        while self.last_message_update + timedelta(seconds=self.__update_message_timeout) > datetime.now():
+        while self.last_message_update + timedelta(milliseconds=self.__update_message_timeout) > datetime.now():
             await self.__send_message(self.__current_message)
             await sleep(1 / tick_rate)
 

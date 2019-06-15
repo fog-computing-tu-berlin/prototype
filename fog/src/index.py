@@ -17,7 +17,7 @@ def main():
 
     config = Config(loop)
 
-    server_edge_controller = ServerEdgeController()
+    server_edge_controller = ServerEdgeController(config)
     control_submitter_holder = ControlSubmitterHolder(server_edge_controller, config)
     control_message_handler = ControlMessageHandler(control_submitter_holder, config)
     loop.create_task(control_message_handler.process_loop())
