@@ -1,33 +1,38 @@
 import asyncio
+
 import zmq
 import zmq.asyncio
 
 
 class MessageCache:
     _context: zmq.asyncio.Context = zmq.asyncio.Context()
-    __pub_socket = None
-    __sub_socket = None
 
-    def __init__(self, unique_name: str = None) -> None:
+    def __init__(self, max_queue_length: int = 100000, unique_name: str = None) -> None:
         super().__init__()
 
         if unique_name is None:
             unique_name = random_string()
         url = 'inproc://' + unique_name
-        self.__setup_pub_socket(url)
-        self.__setup_sub_socket(url)
+        self.__pub_socket = self.__setup_pub_socket(url, max_queue_length)
+        self.__sub_socket = self.__setup_sub_socket(url, max_queue_length)
 
-    def __setup_pub_socket(self, url: str) -> None:
-        # noinspection PyUnresolvedReferences
-        self.__pub_socket = self._context.socket(zmq.PUB)
-        self.__pub_socket.bind(url)
+    # noinspection PyUnresolvedReferences
+    def __setup_pub_socket(self, url: str, max_queue_length: int) -> zmq.asyncio.Socket:
+        socket = self._context.socket(zmq.PUSH)
+        socket.setsockopt(zmq.SNDHWM, max_queue_length)
+        socket.setsockopt(zmq.RCVHWM, max_queue_length)
+        socket.bind(url)
 
-    def __setup_sub_socket(self, url: str) -> None:
-        # noinspection PyUnresolvedReferences
-        self.__sub_socket = self._context.socket(zmq.SUB)
-        self.__sub_socket.connect(url)
-        # noinspection PyUnresolvedReferences
-        self.__sub_socket.setsockopt_string(zmq.SUBSCRIBE, '')
+        return socket
+
+    # noinspection PyUnresolvedReferences
+    def __setup_sub_socket(self, url: str, max_queue_length: int) -> zmq.asyncio.Socket:
+        socket = self._context.socket(zmq.PULL)
+        socket.connect(url)
+        socket.setsockopt(zmq.SNDHWM, max_queue_length)
+        socket.setsockopt(zmq.RCVHWM, max_queue_length)
+
+        return socket
 
     async def __add_to_cache(self, message: bytes):
         await self.__pub_socket.send(message)

@@ -8,7 +8,6 @@ from server.serverIDReceiver import ServerIDReceiver
 from server.serverFogReceiver import ServerFogReceiver
 
 
-
 def main():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     loop = asyncio.get_event_loop()
@@ -20,7 +19,7 @@ def main():
     server_id_receiver = ServerIDReceiver(config, edge_id_generator)
     loop.create_task(server_id_receiver.recv_and_process())
 
-    sensor_submitter = SensorSubmitter(database_connector)
+    sensor_submitter = SensorSubmitter(config, database_connector)
     loop.create_task(sensor_submitter.process_loop())
     server_fog_receiver = ServerFogReceiver(config, sensor_submitter)
     loop.create_task(server_fog_receiver.recv_and_process())

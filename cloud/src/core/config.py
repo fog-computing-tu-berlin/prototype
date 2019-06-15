@@ -26,3 +26,6 @@ class Config:
 
     def id_fog_receiver_listen_port(self) -> int:
         return 5559
+
+    def get_internal_message_cache_max_queue_length(self):
+        return 100000

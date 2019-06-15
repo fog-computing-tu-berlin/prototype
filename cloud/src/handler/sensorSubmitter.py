@@ -1,3 +1,4 @@
+from core.config import Config
 from core.messageCache import MessageCache
 from core.databaseConnector import DatabaseConnector
 import pickle
@@ -5,8 +6,8 @@ import pickle
 
 class SensorSubmitter(MessageCache):
 
-    def __init__(self, database_connector: DatabaseConnector) -> None:
-        super().__init__()
+    def __init__(self, config: Config, database_connector: DatabaseConnector) -> None:
+        super().__init__(config.get_internal_message_cache_max_queue_length())
         self.database_connector = database_connector
 
     async def publish(self, message: str) -> None:
