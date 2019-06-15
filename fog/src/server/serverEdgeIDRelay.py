@@ -22,7 +22,7 @@ class ServerIDReceiver:
         while True:
             message = await socket_rep.recv()
 
-            if self.__config.is_debug_logging():
+            if self.__config.IS_DEBUG_LOGGING:
                 print("EdgeIDRelay received request: " + str(message, 'UTF-8'))
 
             await socket_req.send(message)
@@ -33,7 +33,7 @@ class ServerIDReceiver:
                 # Workaround for broken sockets; This causes message drops, but heals the socket that would causes faulty messages anyway
                 ## This happens when we request ids -> timeout -> request new ids -> get the answer for the first request --> Some breaks further requests
                 ## Probably message trackng is broken. Just kill socket
-                if last_timeout + timedelta(milliseconds=self.__config.get_cloud_id_relay_cloud_timeout()) > datetime.now():
+                if last_timeout + timedelta(milliseconds=self.__config.CLOUD_ID_RELAY_CLOUD_TIMEOUT) > datetime.now():
                     await socket_rep.send_string('Upstream connection error')
                     print('Upstream ID Socket broken. Recreating...')
                     socket_req.close(linger=500)
@@ -47,22 +47,22 @@ class ServerIDReceiver:
     # noinspection PyUnresolvedReferences
     def __setup_socket_rep(self) -> zmq.asyncio.Socket:
         socket_rep = self.context.socket(zmq.REP)
-        socket_rep.setsockopt(zmq.SNDHWM, self.__config.get_edge_id_relay_max_queue_length())
-        socket_rep.setsockopt(zmq.RCVHWM, self.__config.get_edge_id_relay_max_queue_length())
-        socket_rep.bind('tcp://*:' + str(self.__config.get_edge_id_generator_listen_port()))
+        socket_rep.setsockopt(zmq.SNDHWM, self.__config.EDGE_ID_RELAY_MAX_QUEUE_LENGTH)
+        socket_rep.setsockopt(zmq.RCVHWM, self.__config.EDGE_ID_RELAY_MAX_QUEUE_LENGTH)
+        socket_rep.bind('tcp://*:' + str(self.__config.EDGE_ID_GENERATOR_LISTEN_PORT))
 
         return socket_rep
 
     # noinspection PyUnresolvedReferences
     def __setup_socket_req(self) -> zmq.asyncio.Socket:
         socket_req = self.context.socket(zmq.REQ)
-        socket_req.connect(self.__config.get_edge_id_upstream_url())
-        socket_req.setsockopt(zmq.RCVTIMEO, self.__config.get_cloud_id_relay_cloud_timeout())
-        socket_req.setsockopt(zmq.SNDTIMEO, self.__config.get_cloud_id_relay_cloud_timeout())
+        socket_req.connect(self.__config.EDGE_ID_UPSTREAM_URL)
+        socket_req.setsockopt(zmq.RCVTIMEO, self.__config.CLOUD_ID_RELAY_CLOUD_TIMEOUT)
+        socket_req.setsockopt(zmq.SNDTIMEO, self.__config.CLOUD_ID_RELAY_CLOUD_TIMEOUT)
         socket_req.setsockopt(zmq.REQ_CORRELATE, 1)
         socket_req.setsockopt(zmq.REQ_RELAXED, 1)
         socket_req.setsockopt(zmq.LINGER, 0)
-        socket_req.setsockopt(zmq.SNDHWM, self.__config.get_edge_id_relay_max_queue_length())
-        socket_req.setsockopt(zmq.RCVHWM, self.__config.get_edge_id_relay_max_queue_length())
+        socket_req.setsockopt(zmq.SNDHWM, self.__config.EDGE_ID_RELAY_MAX_QUEUE_LENGTH)
+        socket_req.setsockopt(zmq.RCVHWM, self.__config.EDGE_ID_RELAY_MAX_QUEUE_LENGTH)
 
         return socket_req

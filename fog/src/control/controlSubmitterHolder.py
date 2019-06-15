@@ -24,12 +24,12 @@ class ControlSubmitterHolder:
         await control_submitter.update_message(message)
 
     def __init_cache_cleanup(self) -> None:
-        self.config_instance.get_async_loop().create_task(self.__cache_cleanup_loop())
+        self.config_instance.ASYNC_LOOP.create_task(self.__cache_cleanup_loop())
 
     async def __cache_cleanup_loop(self) -> None:
         while True:
             await sleep(1)
             control_submitters = self.control_submitters.copy().items()
             for edge_id, control_submitter in control_submitters:
-                if control_submitter.last_message_update + timedelta(milliseconds=self.config_instance.get_control_message_ticker_update_timeout()) < datetime.now():
+                if control_submitter.last_message_update + timedelta(milliseconds=self.config_instance.CONTROL_MESSAGE_TICKER_UPDATE_TIMEOUT) < datetime.now():
                     del self.control_submitters[edge_id]

@@ -14,10 +14,10 @@ class ControlSubmitter:
         super().__init__()
         self.__server_edge_controller = server_edge_controller
         self.__edge_id = edge_id
-        self.__async_loop = config_instance.get_async_loop()
-        self.__update_message_timeout = config_instance.get_control_message_ticker_update_timeout()
-        self.__tick_rate = config_instance.get_control_message_tick_rate()
-        self.is_debug = config_instance.is_debug_logging()
+        self.__async_loop = config_instance.ASYNC_LOOP
+        self.__update_message_timeout = config_instance.CONTROL_MESSAGE_TICKER_UPDATE_TIMEOUT
+        self.__tick_rate = config_instance.CONTROL_MESSAGE_TICK_RATE
+        self.is_debug = config_instance.IS_DEBUG_LOGGING
 
     async def update_message(self, new_message: str):
         self.last_message_update = datetime.now()
@@ -43,4 +43,4 @@ class ControlSubmitter:
         await self.__server_edge_controller.publish_for_edge(self.__edge_id, message)
 
         if self.is_debug:
-            print("Send control message: " + message)
+            print('Send control message: ' + message + ' for id edge_id: ' + str(self.__edge_id))

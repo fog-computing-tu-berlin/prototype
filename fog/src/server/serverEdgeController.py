@@ -12,7 +12,7 @@ class ServerEdgeController:
         super().__init__()
         # noinspection PyUnresolvedReferences
         self.__pub_socket = self._context.socket(zmq.PUB)
-        self.__pub_socket.bind('tcp://*:' + str(config.get_edge_controller_port()))
+        self.__pub_socket.bind('tcp://*:' + str(config.EDGE_CONTROLLER_PORT))
 
     async def publish_for_edge(self, edge_id: str,  message: str) -> None:
         topic_message = edge_id + " " + message

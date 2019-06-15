@@ -1,52 +1,21 @@
+import os
 from asyncio import AbstractEventLoop
 
 
 class Config:
     def __init__(self, async_loop: AbstractEventLoop) -> None:
         super().__init__()
-        self.__async_loop = async_loop
-
-    # This is not really a config item, but allows easy passing around of the async_loop
-    def get_async_loop(self) -> AbstractEventLoop:
-        return self.__async_loop
-
-    def is_debug_logging(self) -> bool:
-        return True
-
-    def get_control_message_tick_rate(self) -> int:
-        # 0 For only publish on request
-        # Otherwise value in Hz
-        return 4
-
-    def get_control_message_ticker_update_timeout(self) -> int:
-        return 300000
-
-    def get_edge_receiver_listen_port(self) -> int:
-        return 5555
-
-    def get_edge_controller_port(self) -> int:
-        return 5556
-
-    def get_edge_id_generator_listen_port(self) -> int:
-        return 5557
-
-    def get_cloud_upload_url(self):
-        return 'tcp://localhost:5558'
-
-    def get_edge_id_upstream_url(self) -> str:
-        return 'tcp://localhost:5559'
-
-    def get_edge_receiver_max_queue_length(self):
-        return 10000
-
-    def get_edge_id_relay_max_queue_length(self):
-        return 10000
-
-    def get_internal_message_cache_max_queue_length(self):
-        return 100000
-
-    def get_cloud_submit_timeout(self):
-        return 60000
-
-    def get_cloud_id_relay_cloud_timeout(self):
-        return 5000
+        self.ASYNC_LOOP = async_loop
+        self.IS_DEBUG_LOGGING = bool(os.environ.get('IS_DEBUG_LOGGING', True))
+        self.CONTROL_MESSAGE_TICK_RATE = int(os.environ.get('CONTROL_MESSAGE_TICK_RATE', 4))
+        self.CONTROL_MESSAGE_TICKER_UPDATE_TIMEOUT = int(os.environ.get('CONTROL_MESSAGE_TICKER_UPDATE_TIMEOUT', 300000))
+        self.EDGE_RECEIVER_LISTEN_PORT = int(os.environ.get('EDGE_RECEIVER_LISTEN_PORT', 5555))
+        self.EDGE_CONTROLLER_PORT = int(os.environ.get('EDGE_CONTROLLER_PORT', 5556))
+        self.EDGE_ID_GENERATOR_LISTEN_PORT = int(os.environ.get('EDGE_ID_GENERATOR_LISTEN_PORT', 5557))
+        self.CLOUD_UPLOAD_URL = os.environ.get('CLOUD_UPLOAD_URL', 'tcp://localhost:5558')
+        self.EDGE_ID_UPSTREAM_URL = os.environ.get('EDGE_ID_UPSTREAM_URL', 'tcp://localhost:5559')
+        self.EDGE_RECEIVER_MAX_QUEUE_LENGTH = int(os.environ.get('EDGE_RECEIVER_MAX_QUEUE_LENGTH', 10000))
+        self.EDGE_ID_RELAY_MAX_QUEUE_LENGTH = int(os.environ.get('EDGE_ID_RELAY_MAX_QUEUE_LENGTH', 10000))
+        self.INTERNAL_MESSAGE_CACHE_MAX_QUEUE_LENGTH = int(os.environ.get('INTERNAL_MESSAGE_CACHE_MAX_QUEUE_LENGTH', 100000))
+        self.CLOUD_SUBMIT_TIMEOUT = int(os.environ.get('CLOUD_SUBMIT_TIMEOUT', 60000))
+        self.CLOUD_ID_RELAY_CLOUD_TIMEOUT = int(os.environ.get('CLOUD_ID_RELAY_CLOUD_TIMEOUT', 5000))

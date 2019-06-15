@@ -23,7 +23,7 @@ class ServerEdgeReceiver:
             try:
                 message = await socket.recv_string()
 
-                if self.__config.is_debug_logging():
+                if self.__config.IS_DEBUG_LOGGING:
                     print("Received request: ", message)
 
                 reply = await self.__message_processor.process_message(message)
@@ -36,9 +36,9 @@ class ServerEdgeReceiver:
     # noinspection PyUnresolvedReferences
     def __setup_socker(self) -> zmq.asyncio.Socket:
         socket = self.context.socket(zmq.REP)
-        socket.bind('tcp://*:' + str(self.__config.get_edge_receiver_listen_port()))
+        socket.bind('tcp://*:' + str(self.__config.EDGE_RECEIVER_LISTEN_PORT))
         socket.setsockopt(zmq.SNDTIMEO, 100)
-        socket.setsockopt(zmq.SNDHWM, self.__config.get_edge_receiver_max_queue_length())
-        socket.setsockopt(zmq.RCVHWM, self.__config.get_edge_receiver_max_queue_length())
+        socket.setsockopt(zmq.SNDHWM, self.__config.EDGE_RECEIVER_MAX_QUEUE_LENGTH)
+        socket.setsockopt(zmq.RCVHWM, self.__config.EDGE_RECEIVER_MAX_QUEUE_LENGTH)
 
         return socket
