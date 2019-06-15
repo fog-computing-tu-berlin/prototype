@@ -26,4 +26,4 @@ class MessageProcessor:
         await self.cloud_upload_handler.publish(serialized)
 
         # 1 -> Confirm the received message
-        return str(1)
+        return '1'

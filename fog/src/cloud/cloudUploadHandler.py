@@ -22,7 +22,7 @@ class CloudUploaderHandler(MessageCache):
         await self.upload_to_cloud(pickle.loads(message))
 
     async def upload_to_cloud(self, message: ReportMessage):
-        print("Would have uploaded: " + message.toJSON())
+        print("Would have uploaded: " + message.to_json())
         # await asyncio.sleep(5)
         #await self.__socket.send_string(message.toJSON())
         ## Just await, but ignore the return value
