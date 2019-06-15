@@ -39,3 +39,4 @@ class ControlSubmitter:
 
     async def __send_message(self, message: str):
         await self.__server_edge_controller.publish_for_edge(self.__edge_id, message)
+        print("Send control message: " + message)

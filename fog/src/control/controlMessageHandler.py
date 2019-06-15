@@ -26,7 +26,7 @@ class ControlMessageHandler(MessageCache):
         control_message = await self.generate_control_message(report_message)
 
         print("Add report to queue: " + control_message)
-        await self.control_submitter_holder.create_or_update_last_report_message(report_message.plant_id, control_message)
+        await self.control_submitter_holder.create_or_update_last_report_message(report_message.edge_id, control_message)
 
     async def generate_control_message(self, message: ReportMessage):
         plant_processor = PlantProcessor(self.__weather_provider, PlantRecipe("Unknown"))

@@ -17,3 +17,6 @@ class Config:
 
     def get_control_message_ticker_update_timeout(self) -> int:
         return 3600
+
+    def get_cloud_url(self):
+        return 'tcp://localhost:5558'

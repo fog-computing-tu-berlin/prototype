@@ -21,7 +21,7 @@ def main():
     loop.create_task(control_message_handler.process_loop())
 
     # TODO params
-    cloud_message_handler = CloudUploaderHandler('tcp://mycoolserver:5558')
+    cloud_message_handler = CloudUploaderHandler(config)
     loop.create_task(cloud_message_handler.process_loop())
 
     message_processor = MessageProcessor(cloud_message_handler, control_message_handler)
