@@ -1,4 +1,5 @@
 import pickle
+from datetime import datetime, timedelta
 
 import zmq
 import zmq.asyncio
@@ -15,6 +16,8 @@ class CloudUploaderHandler(MessageCache):
 
         self.__socket = self.__setup_socket(config)
         self.__debug_logging = config.is_debug_logging()
+        self.__config = config
+        self.__last_timeout = datetime.now()
 
     # noinspection PyUnresolvedReferences
     def __setup_socket(self, config):
@@ -32,6 +35,7 @@ class CloudUploaderHandler(MessageCache):
 
     async def upload_to_cloud(self, message_raw: bytes):
         message = pickle.loads(message_raw)
+        self.__last_timeout = datetime.now()
         await self.__socket.send_string(message.to_json())
         # Just await, but ignore the return value
 
@@ -40,5 +44,14 @@ class CloudUploaderHandler(MessageCache):
             if self.__debug_logging:
                 print("Uploaded: " + message.to_json())
         except zmq.error.Again:
-            print('Cloud Upload timeout. Retrying..')
+            # Same issue as in serverEdgeIDRelay.py
+            print('Cloud Upload issue. Retrying..')
+            if self.__last_timeout + timedelta(milliseconds=self.__config.get_cloud_submit_timeout()) > datetime.now():
+                print('Upstream Cloud Uploader Socket broken. Recreating...')
+                self.__socket.close(linger=500)
+                self.__socket = self.__setup_socket()
+                print('Recreate successful')
+
+            self.__last_timeout = datetime.now()
+            # This only at least once; Not exactly once
             await self.publish(message_raw)

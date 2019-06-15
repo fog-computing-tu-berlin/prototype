@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 import zmq
 import zmq.asyncio
 
@@ -15,6 +17,7 @@ class ServerIDReceiver:
     async def recv_and_process(self):
         socket_req = self.__setup_socket_req()
         socket_rep = self.__setup_socket_rep()
+        last_timeout = datetime.now()
 
         while True:
             message = await socket_rep.recv()
@@ -26,21 +29,20 @@ class ServerIDReceiver:
             try:
                 edge_id = await socket_req.recv()
                 await socket_rep.send(edge_id)
-            except zmq.error.Again as e:
-                # TODO Issue
-                # The following scenario causes a trackback:
-                # Traceback (most recent call last):
-                #   File "C:\repos\Fog-Computing\fog\src\server\serverEdgeIDRelay.py", line 27, in recv_and_process
-                #     edge_id = await socket_req.recv()
-                #   File "C:\repos\Fog-Computing\fog\venv\lib\site-packages\zmq\_future.py", line 433, in _handle_recv
-                #     result = recv(**kwargs)
-                #   File "zmq\backend\cython\socket.pyx", line 788, in zmq.backend.cython.socket.Socket.recv
-                #   File "zmq\backend\cython\socket.pyx", line 824, in zmq.backend.cython.socket.Socket.recv
-                #   File "zmq\backend\cython\socket.pyx", line 191, in zmq.backend.cython.socket._recv_copy
-                #   File "zmq\backend\cython\socket.pyx", line 186, in zmq.backend.cython.socket._recv_copy
-                #   File "zmq\backend\cython\checkrc.pxd", line 19, in zmq.backend.cython.checkrc._check_rc
-                ## This happens when we request ids -> timeout -> request new ids -> get the answer for the first request --> above stacktrace
-                await socket_rep.send_string('Upstream timout')
+            except zmq.error.Again:
+                # Workaround for broken sockets; This causes message drops, but heals the socket that would causes faulty messages anyway
+                ## This happens when we request ids -> timeout -> request new ids -> get the answer for the first request --> Some breaks further requests
+                ## Probably message trackng is broken. Just kill socket
+                if last_timeout + timedelta(milliseconds=self.__config.get_cloud_id_relay_cloud_timeout()) > datetime.now():
+                    await socket_rep.send_string('Upstream connection error')
+                    print('Upstream ID Socket broken. Recreating...')
+                    socket_req.close(linger=500)
+                    socket_req = self.__setup_socket_req()
+                    print('Recreate successful')
+                else:
+                    await socket_rep.send_string('Upstream timout')
+
+                last_timeout = datetime.now()
 
     # noinspection PyUnresolvedReferences
     def __setup_socket_rep(self) -> zmq.asyncio.Socket:
