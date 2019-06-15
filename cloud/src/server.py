@@ -1,13 +1,9 @@
 import serverZMQ
-import serverFlask
 import asyncio
 
 
 async def main():
-    zmq = serverZMQ.recv_and_process()
-    # Flask currently blocks zmq
-    #serverFlask.startFlask()
-    await zmq
+    await serverZMQ.recv_and_process()
 
 
 if __name__ == "__main__":
