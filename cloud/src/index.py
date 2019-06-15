@@ -1,4 +1,5 @@
 import asyncio
+import signal
 from core.databaseConnector import DatabaseConnector
 from core.config import Config
 from handler.edgeIDGenerator import EdgeIDGenerator
@@ -6,7 +7,6 @@ from handler.sensorSubmitter import SensorSubmitter
 from server.serverIDReceiver import ServerIDReceiver
 from server.serverFogReceiver import ServerFogReceiver
 
-import signal
 
 
 def main():

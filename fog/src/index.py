@@ -1,16 +1,18 @@
-from server import serverEdgeReceiver
 import asyncio
-import sys
+import signal
 from cloud.cloudUploadHandler import CloudUploaderHandler
 from control.controlMessageHandler import ControlMessageHandler
 from core.messageProcessor import MessageProcessor
 from server.serverEdgeController import ServerEdgeController
+from server import serverEdgeReceiver
 from control.controlSubmitterHolder import ControlSubmitterHolder
 from core.config import Config
 
 
 def main():
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
     loop = asyncio.get_event_loop()
+
     config = Config(loop)
 
     server_edge_controller = ServerEdgeController()
@@ -19,30 +21,12 @@ def main():
     loop.create_task(control_message_handler.process_loop())
 
     # TODO params
-    cloud_message_handler = CloudUploaderHandler('tcp://mycoolserver:12345')
+    cloud_message_handler = CloudUploaderHandler('tcp://mycoolserver:5558')
     loop.create_task(cloud_message_handler.process_loop())
 
     message_processor = MessageProcessor(cloud_message_handler, control_message_handler)
     loop.create_task(serverEdgeReceiver.recv_and_process(message_processor))
     loop.run_forever()
-
-    try:
-        sys.exit()
-    except KeyboardInterrupt:
-        # TODO DOES NOT WORK
-        print("Keyboard interrupt")
-        # Handle shutdown gracefully by waiting for all tasks to be cancelled
-        tasks = asyncio.gather(*asyncio.Task.all_tasks(loop=loop), loop=loop, return_exceptions=True)
-        tasks.add_done_callback(lambda t: loop.stop())
-        tasks.cancel()
-
-        while not tasks.done() and not loop.is_closed():
-            loop.run_forever()
-    except:
-        print("Some Other exception")
-    finally:
-        loop.close()
-
 
 if __name__ == "__main__":
     main()
