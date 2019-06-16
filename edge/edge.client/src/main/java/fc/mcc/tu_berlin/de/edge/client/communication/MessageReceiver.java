@@ -41,7 +41,6 @@ public class MessageReceiver extends MessageHandler implements Runnable {
 	            //  Wait for next request from client
 	            byte[] request = subscriber.recv(0);
 	            String string = new String(request);
-	            System.out.println("Received request: ["+string+"].");
 	            addToMessages(string);
 	        }
 	        
@@ -54,6 +53,10 @@ public class MessageReceiver extends MessageHandler implements Runnable {
 	}
 	
 	private void addToMessages(String msg) {
+		
+		if(msg.startsWith(MessageHandler.getId())) {
+			msg = msg.substring(MessageHandler.getId().length() + 1);
+		}
 		
 		synchronized (accessHelper) {
 			Message m = CommandMessage.parseMessage(msg);
