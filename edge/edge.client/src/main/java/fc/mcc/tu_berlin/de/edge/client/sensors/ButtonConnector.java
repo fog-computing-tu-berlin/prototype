@@ -195,6 +195,8 @@ public class ButtonConnector {
 		public void run() {
 			while(!Thread.interrupted()) {
 				
+				boolean sleep = false;
+				
 				synchronized (changeHelper) {
 					if(blinkedL || blinkedR) {
 						if(blinkedL && blinkedR) {
@@ -206,12 +208,7 @@ public class ButtonConnector {
 							buttonROn = buttonROn != true;
 						}
 						setLeds();
-						try {
-							Thread.sleep(500);
-						} catch (InterruptedException e) {
-							Thread.currentThread().interrupt();
-							e.printStackTrace();
-						}
+						sleep = true;
 					}else {
 						try {
 							changeHelper.wait();
@@ -219,6 +216,15 @@ public class ButtonConnector {
 							Thread.currentThread().interrupt();
 							e.printStackTrace();
 						}
+					}
+				}
+				
+				if(sleep) {
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+						e.printStackTrace();
 					}
 				}
 				

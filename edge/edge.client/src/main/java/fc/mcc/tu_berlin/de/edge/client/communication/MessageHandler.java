@@ -11,9 +11,7 @@ import fc.mcc.tu_berlin.de.edge.client.communication.message.MessagePersistor;
  */
 public abstract class MessageHandler {
 	
-	public static final int SERVER_REQ_PORT = 5555;
-
-	private static String id;
+	private static String id = null;
 	
 	private final MessagePersistor messages;
 	
@@ -41,7 +39,8 @@ public abstract class MessageHandler {
 	
 	public static void setId(String id) {
 		synchronized (id_helper) {
-			if(id == null) {
+			if(MessageHandler.id == null) {
+				System.out.println("Got id: " + id);
 				MessageHandler.id = id;
 				id_helper.notifyAll();
 			}
@@ -51,11 +50,13 @@ public abstract class MessageHandler {
 	public static String getId() {
 		synchronized (id_helper) {
 			while(id == null) {
+				System.out.println("Wait for ID");
 				try {
 					id_helper.wait();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				System.out.println("Received ID");
 			}
 			return id;
 		}

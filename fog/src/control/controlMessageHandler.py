@@ -35,8 +35,7 @@ class ControlMessageHandler(MessageCache):
     async def generate_control_message(self, message: ReportMessage):
         plant_processor = PlantProcessor(self.__weather_provider, PlantRecipe("Unknown"))
 
-        report = str(await plant_processor.water_status(message.humidity)) + str(
-            await plant_processor.uv_status(message.uv))
+        report = str(await plant_processor.water_status(message.humidity) + await plant_processor.uv_status(message.uv))
 
         return report
 

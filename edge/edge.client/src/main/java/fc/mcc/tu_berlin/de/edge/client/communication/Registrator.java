@@ -41,14 +41,26 @@ public class Registrator extends MessageHandler implements Runnable{
 		try (ZContext context = new ZContext()) {
 			Socket requester = context.createSocket(SocketType.REQ);
 			requester.connect("tcp://"+ host + ":" + port);
-
 			requester.send(name, 0);
 			String reply = requester.recvStr(0);
-			this.add(new RegisterMessage(reply));
-			MessageHandler.setId(reply);
+			if(checkIDValid(reply)) {
+				this.add(new RegisterMessage(reply));
+				MessageHandler.setId(reply);
+			}else {
+				System.out.println("Can't receive correct ID");
+				System.out.println("Received: " + reply);
+				System.exit(500);
+			}
 		}catch(Exception e) {
 			throw new IllegalArgumentException(e);
 		}
+	}
+	
+	boolean checkIDValid(String input) {
+		for (int i = 0; i < input.length(); i++) {
+			if(input.charAt(i) < '0' || input.charAt(i) > '9') return false;
+		}
+		return true;
 	}
 
 }
