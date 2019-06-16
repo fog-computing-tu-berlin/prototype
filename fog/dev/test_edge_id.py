@@ -1,7 +1,7 @@
 import zmq
 
 num_runs = 5
-url_client = "tcp://localhost:5557"
+url_client = "tcp://18.185.92.86:5557"
 
 context = zmq.Context()
 print("Connecting to server...")

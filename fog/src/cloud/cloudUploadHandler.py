@@ -69,4 +69,4 @@ class CloudUploaderHandler(MessageCache):
 
                     self.__last_timeout = datetime.now()
                     for d in insert_batch:
-                        await self.publish(bytes(json.dumps(d), 'UTF-8'))
+                        await self._add_to_cache(bytes(json.dumps(d), 'UTF-8'))

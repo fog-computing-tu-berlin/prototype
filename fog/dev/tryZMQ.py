@@ -3,7 +3,7 @@ from random import randint
 import time
 
 num_runs = 1000
-url_client = "tcp://localhost:5555"
+url_client = "tcp://18.185.92.86:5555"
 
 context = zmq.Context()
 print("Connecting to server...")
@@ -11,7 +11,7 @@ socket = context.socket(zmq.REQ)
 socket.connect(url_client)
 
 timestamp = randint(1560698424, 1660698424)
-sensor = 1
+sensor = 2
 while num_runs > 0:
     timestamp += randint(300, 30000)
     humidity = randint(1000, 9500)
@@ -23,4 +23,3 @@ while num_runs > 0:
     response = socket.recv_string()
     print(response)
     num_runs = num_runs - 1
-    time.sleep(0.300)
