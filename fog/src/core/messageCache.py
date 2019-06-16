@@ -36,13 +36,13 @@ class MessageCache:
 
         return socket
 
-    async def __add_to_cache(self, message: bytes):
+    async def _add_to_cache(self, message: bytes):
+        if self.__process_loop.done():
+            self.__process_loop = asyncio.get_event_loop().create_task(self.process_loop())
         await self.__pub_socket.send(message)
 
     async def publish(self, message: bytes) -> None:
-        if self.__process_loop.done():
-            self.__process_loop = asyncio.get_event_loop().create_task(self.process_loop())
-        await self.__add_to_cache(message)
+        await self._add_to_cache(message)
 
     def terminate(self) -> None:
         self._context.destroy()

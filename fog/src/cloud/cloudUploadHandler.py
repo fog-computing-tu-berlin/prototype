@@ -1,4 +1,5 @@
-import pickle
+import asyncio
+import json
 from datetime import datetime, timedelta
 
 import zmq
@@ -6,6 +7,7 @@ import zmq.asyncio
 
 from core.config import Config
 from core.messageCache import MessageCache
+from core.reportMessage import ReportMessage
 
 
 class CloudUploaderHandler(MessageCache):
@@ -18,6 +20,8 @@ class CloudUploaderHandler(MessageCache):
         self.__debug_logging = config.IS_DEBUG_LOGGING
         self.__config = config
         self.__last_timeout = datetime.now()
+        self.__insert_batch = []
+        self.__insert_loop: asyncio.Task = asyncio.get_event_loop().create_task(self.insert_loop())
 
     # noinspection PyUnresolvedReferences
     def __setup_socket(self, config):
@@ -30,28 +34,39 @@ class CloudUploaderHandler(MessageCache):
 
         return socket
 
+    async def publish(self, message: ReportMessage) -> None:
+        await self._add_to_cache(bytes(message.to_json(), 'UTF-8'))
+
     async def process_message(self, message: bytes) -> None:
-        await self.upload_to_cloud(message)
+        self.__insert_batch.append(json.loads(str(message, 'UTF-8')))
+        # Ensure the insert Loop is restart on errors
+        if self.__insert_loop.done():
+            self.__insert_loop = asyncio.get_event_loop().create_task(self.insert_loop())
 
-    async def upload_to_cloud(self, message_raw: bytes):
-        message = pickle.loads(message_raw)
-        self.__last_timeout = datetime.now()
-        await self.__socket.send_string(message.to_json())
-        # Just await, but ignore the return value
+    async def insert_loop(self):
+        while True:
+            await asyncio.sleep(2)
+            if len(self.__insert_batch) > 0:
+                insert_batch = self.__insert_batch.copy()
+                self.__insert_batch = []
+                self.__last_timeout = datetime.now()
+                await self.__socket.send_string(json.dumps(insert_batch))
 
-        try:
-            await self.__socket.recv_string()
-            if self.__debug_logging:
-                print("Uploaded: " + message.to_json())
-        except zmq.error.Again:
-            # Same issue as in serverEdgeIDRelay.py
-            print('Cloud Upload issue. Retrying..')
-            if self.__last_timeout + timedelta(milliseconds=self.__config.CLOUD_SUBMIT_TIMEOUT) > datetime.now():
-                print('Upstream Cloud Uploader Socket broken. Recreating...')
-                self.__socket.close(linger=500)
-                self.__socket = self.__setup_socket()
-                print('Recreate successful')
+                try:
+                    # Just await, but ignore the return value
+                    await self.__socket.recv_string()
+                    if self.__debug_logging:
+                        print("Uploaded " + str(len(insert_batch)) + ' reports')
+                except zmq.error.Again:
+                    # Same issue as in serverEdgeIDRelay.py
+                    print('Cloud Upload issue. Retrying..')
+                    if self.__last_timeout + timedelta(
+                            milliseconds=self.__config.CLOUD_SUBMIT_TIMEOUT) > datetime.now():
+                        print('Upstream Cloud Uploader Socket broken. Recreating...')
+                        self.__socket.close(linger=500)
+                        self.__socket = self.__setup_socket(self.__config)
+                        print('Recreate successful')
 
-            self.__last_timeout = datetime.now()
-            # This only at least once; Not exactly once
-            await self.publish(message_raw)
+                    self.__last_timeout = datetime.now()
+                    for d in insert_batch:
+                        await self.publish(bytes(json.dumps(d), 'UTF-8'))

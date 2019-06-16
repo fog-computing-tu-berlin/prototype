@@ -1,4 +1,5 @@
 import asyncio
+import traceback
 
 import zmq
 import zmq.asyncio
@@ -17,7 +18,7 @@ class ServerEdgeReceiver:
         self.__message_processor = message_processor
 
     async def recv_and_process(self) -> None:
-        socket = self.__setup_socker()
+        socket = self.__setup_socket()
 
         while True:
             try:
@@ -29,12 +30,17 @@ class ServerEdgeReceiver:
                 reply = await self.__message_processor.process_message(message)
                 await socket.send_string(reply)
             except KeyboardInterrupt:
+                socket.close()
                 break
             except zmq.ZMQError:
                 await asyncio.sleep(60)
+            except Exception as e:
+                socket.close()
+                traceback.print_exc()
+                break
 
     # noinspection PyUnresolvedReferences
-    def __setup_socker(self) -> zmq.asyncio.Socket:
+    def __setup_socket(self) -> zmq.asyncio.Socket:
         socket = self.context.socket(zmq.REP)
         socket.bind('tcp://*:' + str(self.__config.EDGE_RECEIVER_LISTEN_PORT))
         socket.setsockopt(zmq.SNDTIMEO, 100)

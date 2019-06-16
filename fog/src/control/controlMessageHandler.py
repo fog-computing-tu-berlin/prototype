@@ -23,6 +23,9 @@ class ControlMessageHandler(MessageCache):
             weather_provider = WeatherProvider(config)
         self.__weather_provider = weather_provider
 
+    async def publish(self, message: ReportMessage) -> None:
+        await self._add_to_cache(pickle.dumps(message))
+
     async def process_message(self, message: bytearray) -> None:
         report_message = pickle.loads(message)
         control_message = await self.generate_control_message(report_message)

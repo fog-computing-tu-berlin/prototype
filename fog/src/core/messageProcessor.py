@@ -1,8 +1,6 @@
-from core.reportMessage import ReportMessage
 from cloud.cloudUploadHandler import CloudUploaderHandler
 from control.controlMessageHandler import ControlMessageHandler
-
-import pickle
+from core.reportMessage import ReportMessage
 
 
 class MessageProcessor:
@@ -20,10 +18,8 @@ class MessageProcessor:
         except ValueError:
             return "Error parsing Message"
 
-        serialized = pickle.dumps(parsed_message)
-
-        await self.control_message_handler.publish(serialized)
-        await self.cloud_upload_handler.publish(serialized)
+        await self.control_message_handler.publish(parsed_message)
+        await self.cloud_upload_handler.publish(parsed_message)
 
         # 1 -> Confirm the received message
         return '1'
