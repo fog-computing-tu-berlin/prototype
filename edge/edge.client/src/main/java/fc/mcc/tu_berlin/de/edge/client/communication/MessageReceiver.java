@@ -14,11 +14,13 @@ import zmq.ZMQ;
  */
 public class MessageReceiver extends MessageHandler implements Runnable {
 	
-	private final int PORT;
+	private final int port;
+	private final String host;
 	
-	public MessageReceiver(int PORT, String name) {
+	public MessageReceiver(String host, int port, String name) {
 		super("receiver_" + name);
-		this.PORT = PORT;
+		this.port = port;
+		this.host = host;
 		new Thread(this).start();
 	}
 	
@@ -32,7 +34,7 @@ public class MessageReceiver extends MessageHandler implements Runnable {
 			ZContext context = new ZContext();
 			Socket subscriber = context.createSocket(SocketType.SUB);
 		
-	        subscriber.connect("tcp://0.0.0.0:" + PORT);
+	        subscriber.connect("tcp://" + host + ":" + port);
 	        subscriber.subscribe(MessageHandler.getId().getBytes(ZMQ.CHARSET));
 	        
 	        while (!Thread.interrupted()) {
@@ -41,8 +43,6 @@ public class MessageReceiver extends MessageHandler implements Runnable {
 	            String string = new String(request);
 	            System.out.println("Received request: ["+string+"].");
 	            addToMessages(string);
-	
-	            subscriber.send("1".getBytes(), 0);
 	        }
 	        
 	        subscriber.close();
@@ -56,7 +56,8 @@ public class MessageReceiver extends MessageHandler implements Runnable {
 	private void addToMessages(String msg) {
 		
 		synchronized (accessHelper) {
-			this.add(CommandMessage.parseMessage(msg));
+			Message m = CommandMessage.parseMessage(msg);
+			if(m != null) this.add(m);
 			accessHelper.notifyAll();
 		}
 	}

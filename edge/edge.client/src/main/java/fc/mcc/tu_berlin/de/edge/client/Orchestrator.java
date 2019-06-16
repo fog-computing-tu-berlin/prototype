@@ -7,7 +7,6 @@ import com.tinkerforge.AlreadyConnectedException;
 import com.tinkerforge.IPConnection;
 import com.tinkerforge.NetworkException;
 
-import fc.mcc.tu_berlin.de.edge.client.communication.MessageHandler;
 import fc.mcc.tu_berlin.de.edge.client.communication.MessageReceiver;
 import fc.mcc.tu_berlin.de.edge.client.communication.MessageSender;
 import fc.mcc.tu_berlin.de.edge.client.communication.Registrator;
@@ -24,7 +23,7 @@ public class Orchestrator {
 
 	public void work(String name, String button_ID, List<Sensor> sensors, String serverHost) {
 		
-		new Thread(new Registrator(serverHost, MessageHandler.SERVER_REQ_PORT, name)).start();
+		new Thread(new Registrator(serverHost, 5557, name)).start();
 		
 		IPConnection ipcon = new IPConnection();
 		
@@ -46,11 +45,11 @@ public class Orchestrator {
 		SensorReader sr = new SensorReader(sensors, statusHolder, ipcon);
 		
 
-		Collector collector = new Collector(new MessageSender(serverHost, MessageHandler.SERVER_REQ_PORT, name), 50, 50, sr);
+		Collector collector = new Collector(new MessageSender(serverHost, 5555, name), 50, 50, sr);
 		Thread collectorThread = new Thread(collector);
 		collectorThread.start();
 		
-		Feedback feedback = new Feedback(new MessageReceiver(5556, name), statusHolder, button_ID, ipcon, 10000);
+		Feedback feedback = new Feedback(new MessageReceiver(serverHost, 5556, name), statusHolder, button_ID, ipcon, 10000);
 		Thread feedbackThread = new Thread(feedback);
 		feedbackThread.start();
 		
