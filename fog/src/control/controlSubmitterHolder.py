@@ -1,4 +1,4 @@
-from asyncio import sleep
+from asyncio import sleep, get_event_loop
 from datetime import timedelta, datetime
 
 from control.controlSubmitter import ControlSubmitter
@@ -24,7 +24,7 @@ class ControlSubmitterHolder:
         await control_submitter.update_message(message)
 
     def __init_cache_cleanup(self) -> None:
-        self.config_instance.ASYNC_LOOP.create_task(self.__cache_cleanup_loop())
+        get_event_loop().create_task(self.__cache_cleanup_loop())
 
     async def __cache_cleanup_loop(self) -> None:
         while True:

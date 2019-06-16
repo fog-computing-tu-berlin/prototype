@@ -21,7 +21,6 @@ def main():
     loop.create_task(server_id_receiver.recv_and_process())
 
     sensor_submitter = SensorSubmitter(config, database_connector)
-    loop.create_task(sensor_submitter.process_loop())
     server_fog_receiver = ServerFogReceiver(config, sensor_submitter)
     loop.create_task(server_fog_receiver.recv_and_process())
 

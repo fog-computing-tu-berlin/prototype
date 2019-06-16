@@ -16,15 +16,13 @@ def main():
     signal.signal(signal.SIGTERM, signal.SIG_DFL)
     loop = asyncio.get_event_loop()
 
-    config = Config(loop)
+    config = Config()
 
     server_edge_controller = ServerEdgeController(config)
     control_submitter_holder = ControlSubmitterHolder(server_edge_controller, config)
     control_message_handler = ControlMessageHandler(control_submitter_holder, config)
-    loop.create_task(control_message_handler.process_loop())
 
     cloud_message_handler = CloudUploaderHandler(config)
-    loop.create_task(cloud_message_handler.process_loop())
 
     server_edge_id = ServerIDReceiver(config)
     loop.create_task(server_edge_id.recv_and_process())

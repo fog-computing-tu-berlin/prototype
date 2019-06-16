@@ -16,6 +16,8 @@ class MessageCache:
         self.__pub_socket = self.__setup_pub_socket(url, max_queue_length)
         self.__sub_socket = self.__setup_sub_socket(url, max_queue_length)
 
+        self.__process_loop = asyncio.get_event_loop().create_task(self.process_loop())
+
     # noinspection PyUnresolvedReferences
     def __setup_pub_socket(self, url: str, max_queue_length: int) -> zmq.asyncio.Socket:
         socket = self._context.socket(zmq.PUSH)
@@ -38,6 +40,8 @@ class MessageCache:
         await self.__pub_socket.send(message)
 
     async def publish(self, message: bytes) -> None:
+        if self.__process_loop.done():
+            self.__process_loop = asyncio.get_event_loop().create_task(self.process_loop())
         await self.__add_to_cache(message)
 
     def terminate(self) -> None:

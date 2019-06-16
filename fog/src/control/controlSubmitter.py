@@ -1,4 +1,4 @@
-from asyncio import sleep
+from asyncio import sleep, get_event_loop
 from datetime import datetime, timedelta
 
 from core.config import Config
@@ -14,7 +14,6 @@ class ControlSubmitter:
         super().__init__()
         self.__server_edge_controller = server_edge_controller
         self.__edge_id = edge_id
-        self.__async_loop = config_instance.ASYNC_LOOP
         self.__update_message_timeout = config_instance.CONTROL_MESSAGE_TICKER_UPDATE_TIMEOUT
         self.__tick_rate = config_instance.CONTROL_MESSAGE_TICK_RATE
         self.is_debug = config_instance.IS_DEBUG_LOGGING
@@ -26,7 +25,7 @@ class ControlSubmitter:
             self.__current_message = new_message
 
             if not self.__is_ticker_running:
-                self.__async_loop.create_task(self.__ticker(self.__tick_rate))
+                get_event_loop().create_task(self.__ticker(self.__tick_rate))
         else:
             await self.__send_message(new_message)
 
