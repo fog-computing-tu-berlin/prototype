@@ -1,11 +1,9 @@
 import os
-from asyncio import AbstractEventLoop
 
 
 class Config:
-    def __init__(self, async_loop: AbstractEventLoop) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.ASYNC_LOOP = async_loop
         self.IS_DEBUG_LOGGING = bool(os.environ.get('IS_DEBUG_LOGGING', True))
         self.CONTROL_MESSAGE_TICK_RATE = int(os.environ.get('CONTROL_MESSAGE_TICK_RATE', 4))
         self.CONTROL_MESSAGE_TICKER_UPDATE_TIMEOUT = int(os.environ.get('CONTROL_MESSAGE_TICKER_UPDATE_TIMEOUT', 300000))
