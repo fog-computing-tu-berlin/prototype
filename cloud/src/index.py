@@ -10,6 +10,7 @@ from server.serverFogReceiver import ServerFogReceiver
 
 def main():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
+    signal.signal(signal.SIGTERM, signal.SIG_DFL)
     loop = asyncio.get_event_loop()
 
     config = Config(loop)

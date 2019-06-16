@@ -1,6 +1,6 @@
 import zmq
 
-num_runs = 100
+num_runs = 1000
 url_client = "tcp://localhost:5555"
 
 context = zmq.Context()

@@ -3,7 +3,8 @@ services:
   cloud:
     build: .
     ports:
-      - "5555:5555"
+      - "5558:5558"
+      - "5559:5559"
   postgres:
     image: "postgres:11"
     environment:
