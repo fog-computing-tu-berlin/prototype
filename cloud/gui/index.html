@@ -107,7 +107,7 @@
             var lastId = -1;
             var charts = [];
 
-            $.get('http://localhost:8080/sensor?edge_id=eq.' + SENSOR_ID + '&order=id.desc&limit=' + LIMIT, function (response) {
+            $.get(window.location.origin + ':8080/sensor?edge_id=eq.' + SENSOR_ID + '&order=id.desc&limit=' + LIMIT, function (response) {
                 response.reverse();
 
                 var timestamps = [];
@@ -184,7 +184,7 @@
             function refreshData() {
                 console.log(lastId - LIMIT);
 
-                $.get('http://localhost:8080/sensor?edge_id=eq.' + SENSOR_ID + '&order=id.desc&id=gt.' + (lastId - LIMIT) + '&limit=' + LIMIT, function (response) {
+                $.get(window.location.origin + ':8080/sensor?edge_id=eq.' + SENSOR_ID + '&order=id.desc&id=gt.' + (lastId - LIMIT) + '&limit=' + LIMIT, function (response) {
                     console.log(response.length + ' new values loaded');
 
                     if(response.length == 0)
