@@ -17,10 +17,10 @@ class ControlMessageHandler(MessageCache):
         super().__init__(config.INTERNAL_MESSAGE_CACHE_MAX_QUEUE_LENGTH)
 
         self.control_submitter_holder = control_submitter_holder
-        self.is_debug = config.IS_DEBUG_LOGGING
+        self.config = config
 
         if weather_provider is None:
-            weather_provider = WeatherProvider()
+            weather_provider = WeatherProvider(config)
         self.__weather_provider = weather_provider
 
     async def process_message(self, message: bytearray) -> None:
@@ -29,13 +29,12 @@ class ControlMessageHandler(MessageCache):
 
         await self.control_submitter_holder.create_or_update_last_report_message(str(report_message.edge_id), control_message)
 
-        if self.is_debug:
+        if self.config.IS_DEBUG_LOGGING:
             print("Add report to queue: " + control_message)
 
     async def generate_control_message(self, message: ReportMessage):
-        plant_processor = PlantProcessor(self.__weather_provider, PlantRecipe("Unknown"))
+        plant_processor = PlantProcessor(self.config, self.__weather_provider, PlantRecipe("Unknown"))
 
         report = str(await plant_processor.water_status(message.humidity) + await plant_processor.uv_status(message.uv))
 
         return report
-
