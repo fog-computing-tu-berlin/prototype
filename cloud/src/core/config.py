@@ -16,3 +16,4 @@ class Config:
         self.FOG_RECEIVER_MAX_QUEUE_LENGTH = int(os.environ.get('FOG_RECEIVER_MAX_QUEUE_LENGTH', 10000))
         self.ID_RECEIVER_MAX_QUEUE_LENGTH = int(os.environ.get('ID_RECEIVER_MAX_QUEUE_LENGTH', 10000))
         self.INTERNAL_MESSAGE_CACHE_MAX_QUEUE_LENGTH = int(os.environ.get('INTERNAL_MESSAGE_CACHE_MAX_QUEUE_LENGTH', 100000))
+        self.USE_DATABASE_BULK_INSERT = bool(os.environ.get('USE_DATABASE_BULK_INSERT', True))
