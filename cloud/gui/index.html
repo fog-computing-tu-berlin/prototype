@@ -1,0 +1,269 @@
+<!doctype html>
+<HTML>
+<HEAD>
+    <meta charset="utf-8">
+    <title>Fog Computing - Plant Service</title>
+
+    <script type="application/javascript" src="src/jquery/jquery-3.4.1.min.js"></script>
+
+    <script type="application/javascript" src="src/bootstrap/js/bootstrap.min.js"></script>
+    <script type="application/javascript" src="src/chartjs/Chart.bundle.min.js"></script>
+    <script type="application/javascript" src="src/chartjs/utils.js"></script>
+    <link rel="stylesheet" type="text/css" href="src/chartjs/Chart.min.css">
+    <link rel="stylesheet" type="text/css" href="src/bootstrap/css/bootstrap.min.css">
+
+
+    <style type="text/css">
+        input {
+            margin-left: 0px;
+            margin-top: 5px;
+        }
+
+        h1 {
+            margin-left: 0px;
+        }
+
+        p {
+            margin-left: 0px;
+        }
+
+        h5 {
+            margin-left: 0px;
+        }
+
+        button {
+            margin-left: 0px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+    </style>
+</HEAD>
+
+<BODY>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <img src="src/headline.png" width="100%">
+            <div class="jumbotron">
+                In this demo we observe live values from a smart plant service that is connected to a Fog Computing
+                infrastructure including several edge, cloud and fog specific components that interact with great care
+                regarding fault tolerance.
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+
+    <div class="row" style="margin-left: 0px;">
+        
+        <div class="col-12">
+            <div class="chart-container">
+                <span class="badge badge-primary">Temperature [°C]</span>
+                <canvas id="chLineTemperature" width="400px" height="150"></canvas>
+                <span class="badge badge-info" style="float: right;">Time [timestamp]</span>
+                <br><br>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="chart-container">
+                <span class="badge badge-success">Humidity [%]</span>
+                <canvas id="chLineHumidity" width="400px" height="150"></canvas>
+                <span class="badge badge-info" style="float: right;">Time [timestamp]</span>
+                <br><br>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="chart-container">
+                <span class="badge badge-danger">UV Light [mW]</span>
+                <canvas id="chLineUV" width="400px" height="150"></canvas>
+                <span class="badge badge-info" style="float: right;">Time [timestamp]</span>
+                <br><br>
+            </div>
+        </div>
+
+
+
+        <script>
+            function getQueryVariable(variable) {
+                var query = window.location.search.substring(1);
+                var vars = query.split("&");
+                for (var i=0;i<vars.length;i++) {
+                    var pair = vars[i].split("=");
+                    if(pair[0] == variable){return pair[1];}
+                }
+                return(false);
+            }
+
+            var SENSOR_ID = getQueryVariable("sensor") ? getQueryVariable("sensor") : 1;
+            var LIMIT = getQueryVariable("limit") ? getQueryVariable("limit") : 50;
+            var TIME = getQueryVariable("time") ? getQueryVariable("time") : 1000;
+            var RETRY = getQueryVariable("retry") ? getQueryVariable("retry") : 60;
+
+            var lastId = -1;
+            var charts = [];
+
+            $.get('http://localhost:8080/sensor?edge_id=eq.' + SENSOR_ID + '&order=id.desc&limit=' + LIMIT, function (response) {
+                response.reverse();
+
+                var timestamps = [];
+                var temperatures = [];
+                var humidities = [];
+                var uVs = [];
+
+                response.forEach(function (value) {
+                    timestamps.push(value.started_at.substring(11, value.started_at.length));
+                    temperatures.push(value.temperature);
+                    humidities.push(value.humidity);
+                    uVs.push(value.uv);
+                });
+
+                lastId = response[response.length-1].id;
+
+                var chartDataTemperature = {
+                    labels: timestamps,
+                    datasets: [{
+                        data: temperatures
+                    }]
+                };
+
+                var chartDataHumidity = {
+                    labels: timestamps,
+                    datasets: [{
+                        data: humidities
+                    }]
+                };
+
+                var chartDataUV = {
+                    labels: timestamps,
+                    datasets: [{
+                        data: uVs
+                    }]
+                };
+
+                // console.log(chartDataTemperature);
+                // console.log(chartDataHumidity);
+                // console.log(chartDataUV);
+
+                ['chLineTemperature', 'chLineHumidity', 'chLineUV'].forEach(function (chartName) {
+                    var d;
+                    if(chartName == 'chLineTemperature')
+                        d = chartDataTemperature;
+                    else if(chartName == 'chLineHumidity')
+                        d = chartDataHumidity;
+                    else if (chartName == 'chLineUV')
+                        d = chartDataUV;
+
+                    var chLine = document.getElementById(chartName);
+                    if (chLine) {
+                        charts.push(new Chart(chLine, {
+                            type: 'line',
+                            data: d,
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: false
+                                        }
+                                    }]
+                                },
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }));
+                    }
+                });
+            });
+
+            var nbOfRetries = RETRY;
+            function refreshData() {
+                console.log(lastId - LIMIT);
+
+                $.get('http://localhost:8080/sensor?edge_id=eq.' + SENSOR_ID + '&order=id.desc&id=gt.' + (lastId - LIMIT) + '&limit=' + LIMIT, function (response) {
+                    console.log(response.length + ' new values loaded');
+
+                    if(response.length == 0)
+                        nbOfRetries--;
+
+                    response.reverse();
+
+                    response.forEach(function (value) {
+                        var chartCount = 0;
+                        charts.forEach(function (chart) {
+                            if(!chart.data.labels.includes(value.started_at)) {
+                                chart.data.labels.push(value.started_at.substring(11, value.started_at.length));
+
+                                if(chartCount == 0)
+                                    chart.data.datasets[0].data.push(value.temperature);
+                                else if(chartCount == 1)
+                                    chart.data.datasets[0].data.push(value.humidity);
+                                else if (chartCount == 2)
+                                    chart.data.datasets[0].data.push(value.uv);
+
+                                chart.data.labels.shift();
+                                chart.data.datasets[0].data.shift();
+                                chartCount++;
+                            }
+                        });
+
+                    });
+                    lastId += response.length;
+
+                    charts.forEach(function (chart) {
+                        chart.update(0);
+                    });
+
+                });
+
+                if(nbOfRetries > 0)
+                    setTimeout(refreshData, TIME);
+                else
+                    alert('[TIMEOUT] Is the sensor running? If so, please reload the page!')
+
+            }
+
+            refreshData();
+
+        </script>
+
+
+    </div>
+
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="jumbotron">
+                This is joint work of <strong>Jasper Bernhardt</strong>, <strong>Elias Grünewald</strong> and
+                <strong>Fabian Lehmann</strong>.<img
+                    src="src/tub.svg"
+                    style="width: 15%; float: right;" class="img-fluid" alt="">
+                <br><br>
+                Course: <strong>Fog Computing</strong>,
+                June 2019<br>
+                Advisors: <strong>Prof. Dr.-Ing. David Bermbach, Martin Grambow, Jonathan
+                Hasenburg </strong><br>
+                <br>
+                Chair Mobile Cloud Computing<br>
+                Faculty IV – Electrical Engineering and Computer Science<br>
+                Technical University of Berlin
+                <br>
+                <br>
+                See source code on <strong><a
+                    href="https://github.com/fog-computing-tu-berlin">Github</a></strong>.
+                <br>License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0
+                (Apache-2.0)</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</BODY>
+</HTML>
