@@ -17,4 +17,9 @@ class SensorSubmitter(MessageCache):
         await self.create_in_database(pickle.loads(message))
 
     async def create_in_database(self, message: str):
-        return await self.database_connector.create_new_sensor_entry(message)
+        try:
+            return await self.database_connector.create_new_sensor_entry(message)
+        except:
+            # Only at least once; Not exactly once
+            print('Database issue. Retrying..')
+            await self.publish(pickle.dumps(message))
