@@ -100,10 +100,14 @@
             }
 
             var SENSOR_ID = getQueryVariable("sensor") ? getQueryVariable("sensor") : 1;
+            var LIMIT = getQueryVariable("limit") ? getQueryVariable("limit") : 50;
+            var TIME = getQueryVariable("time") ? getQueryVariable("time") : 1000;
+            var RETRY = getQueryVariable("retry") ? getQueryVariable("retry") : 60;
+
             var lastId = -1;
             var charts = [];
 
-            $.get('http://localhost:8080/sensor?edge_id=eq.' + SENSOR_ID + '&order=id.desc&limit=50', function (response) {
+            $.get('http://localhost:8080/sensor?edge_id=eq.' + SENSOR_ID + '&order=id.desc&limit=' + LIMIT, function (response) {
                 response.reverse();
 
                 var timestamps = [];
@@ -176,11 +180,11 @@
                 });
             });
 
-            var nbOfRetries = 60;
+            var nbOfRetries = RETRY;
             function refreshData() {
-                console.log(lastId-50);
+                console.log(lastId - LIMIT);
 
-                $.get('http://localhost:8080/sensor?edge_id=eq.' + SENSOR_ID + '&order=id.desc&id=gt.' + (lastId-50) + '&limit=50', function (response) {
+                $.get('http://localhost:8080/sensor?edge_id=eq.' + SENSOR_ID + '&order=id.desc&id=gt.' + (lastId - LIMIT) + '&limit=' + LIMIT, function (response) {
                     console.log(response.length + ' new values loaded');
 
                     if(response.length == 0)
@@ -217,7 +221,7 @@
                 });
 
                 if(nbOfRetries > 0)
-                    setTimeout(refreshData, 1000);
+                    setTimeout(refreshData, TIME);
                 else
                     alert('[TIMEOUT] Is the sensor running? If so, please reload the page!')
 
