@@ -21,8 +21,6 @@ services:
       - POSTGRES_PASSWORD=SuperSecurePassword
       - POSTGRES_USER=postgres
       - POSTGRES_DB=fgh
-    tmpfs:
-      - /var/lib/postgresql/data
   flyway:
     image: "boxfuse/flyway:6.0.0-beta2"
     command: -url=jdbc:postgresql://postgres:5432/fgh -user=postgres -password=SuperSecurePassword -connectRetries=60 migrate
