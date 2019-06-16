@@ -25,14 +25,25 @@ def main():
     cloud_message_handler = CloudUploaderHandler(config)
 
     server_edge_id = ServerIDReceiver(config)
-    loop.create_task(server_edge_id.recv_and_process())
+    server_edge_id_loop = loop.create_task(server_edge_id.recv_and_process())
 
     message_processor = MessageProcessor(cloud_message_handler, control_message_handler)
     server_edge_receiver = ServerEdgeReceiver(config, message_processor)
-    loop.create_task(server_edge_receiver.recv_and_process())
+    server_edge_receiver_loop = loop.create_task(server_edge_receiver.recv_and_process())
 
-    loop.run_forever()
+    while True:
+        try:
+            loop.run_until_complete(asyncio.sleep(2))
+            if server_edge_id_loop.done():
+                server_edge_id_loop = loop.create_task(server_edge_id.recv_and_process())
+            if server_edge_receiver_loop.done():
+                server_edge_receiver_loop = loop.create_task(server_edge_receiver.recv_and_process())
+        except KeyboardInterrupt:
+            break
+        except:
+            pass
 
+    loop.close()
 
 if __name__ == "__main__":
     main()

@@ -5,7 +5,7 @@ class Config:
     def __init__(self) -> None:
         super().__init__()
         self.IS_DEBUG_LOGGING = bool(os.environ.get('IS_DEBUG_LOGGING', True))
-        self.CONTROL_MESSAGE_TICK_RATE = int(os.environ.get('CONTROL_MESSAGE_TICK_RATE', 400))
+        self.CONTROL_MESSAGE_TICK_RATE = int(os.environ.get('CONTROL_MESSAGE_TICK_RATE', 4))
         self.CONTROL_MESSAGE_TICKER_UPDATE_TIMEOUT = int(os.environ.get('CONTROL_MESSAGE_TICKER_UPDATE_TIMEOUT', 300000))
         self.EDGE_RECEIVER_LISTEN_PORT = int(os.environ.get('EDGE_RECEIVER_LISTEN_PORT', 5555))
         self.EDGE_CONTROLLER_PORT = int(os.environ.get('EDGE_CONTROLLER_PORT', 5556))

@@ -18,13 +18,24 @@ def main():
 
     edge_id_generator = EdgeIDGenerator(database_connector)
     server_id_receiver = ServerIDReceiver(config, edge_id_generator)
-    loop.create_task(server_id_receiver.recv_and_process())
+    server_id_receiver_loop = loop.create_task(server_id_receiver.recv_and_process())
 
     sensor_submitter = SensorSubmitter(config, database_connector)
     server_fog_receiver = ServerFogReceiver(config, sensor_submitter)
-    loop.create_task(server_fog_receiver.recv_and_process())
+    server_fog_receiver_loop = loop.create_task(server_fog_receiver.recv_and_process())
 
-    loop.run_forever()
+    while True:
+        try:
+            loop.run_until_complete(asyncio.sleep(2))
+            if server_id_receiver_loop.done():
+                server_id_receiver_loop = loop.create_task(server_id_receiver.recv_and_process())
+            if server_fog_receiver_loop.done():
+                server_fog_receiver_loop = loop.create_task(server_fog_receiver.recv_and_process())
+        except KeyboardInterrupt:
+            break
+        except:
+            pass
+
     loop.close()
 
 
