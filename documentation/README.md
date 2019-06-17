@@ -32,7 +32,9 @@ The edge handles different sensors:
 - 0..n ultraviolet sensors
 - 1 button<br><br>
 A sample setup looks like this:<br>
+<p align="center">
 <img src="media/Sensors.png" alt="sensors" width="50%" height="50%">
+</p>
 <br>
 
 ### Overview
@@ -49,9 +51,13 @@ java -jar -jar target\edge.client.jar 18.185.92.86 myplant vTy (h,HF1) (u,xkb) (
 Firstly one has to define the address of the fog node. There after the name of the supervised plant, for example: "myplant", "vTy" is an example ID for the button and the tuples in the end present the sensors. "h" is humidity, "t" - temperature, "u" - ultraviolet and the second param the ID. <br>
 
 To get reliable data one has to place the sensors directly on the plant. The humidity sensor should touch the potting soil. The ultraviolet sensor should be aligned to the sun.<br>
-<img src="media/myplant7.jpg" alt="plant setup" width="90%" height="90%"><br>
+<p align="center">
+<img src="media/myplant7.jpg" alt="plant setup" width="90%" height="90%">
+</p>
 Afterward you are supposed to connect the sensors to the master brick and the master brick to a (cheap) edge device. For example a raspberry pi with speakers or a Mac Book Pro (not a common edge device).<br>
+<p align="center">
 <img src="media/myplant10.jpg" alt="overview" width="90%" height="90%">
+</p>
 
 ### Sequence diagramm
 
