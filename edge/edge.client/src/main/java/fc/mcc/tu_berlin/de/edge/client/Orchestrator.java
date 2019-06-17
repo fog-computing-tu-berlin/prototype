@@ -45,7 +45,7 @@ public class Orchestrator {
 		SensorReader sr = new SensorReader(sensors, statusHolder, ipcon);
 		
 
-		Collector collector = new Collector(new MessageSender(serverHost, 5555, name), 50, 50, sr);
+		Collector collector = new Collector(new MessageSender(serverHost, 5555, name), 20, 20, sr);
 		Thread collectorThread = new Thread(collector);
 		collectorThread.start();
 		
