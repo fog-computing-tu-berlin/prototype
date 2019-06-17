@@ -1,11 +1,5 @@
 version: '3.3'
 services:
-  fog:
-    build: ../fog
-    ports:
-      - "5555:5555"
-      - "5556:5556"
-      - "5557:5557"
   cloud:
     build: .
     ports:
