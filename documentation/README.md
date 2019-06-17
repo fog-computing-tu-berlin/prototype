@@ -42,7 +42,7 @@ To start the JAVA-project:
 ```bash
 install brickd https://www.tinkerforge.com/de/doc/Software/Brickd.html#brickd
 install brickv https://www.tinkerforge.com/de/doc/Software/Brickv.html#brickv
-cd edge\edger.client\
+cd edge\edge.client\
 mvn clean package
 java -jar -jar target\edge.client.jar 18.185.92.86 myplant vTy (h,HF1) (u,xkb) (t,EKx)
 ```
