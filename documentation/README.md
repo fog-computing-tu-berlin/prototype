@@ -155,6 +155,11 @@ Afterward you are supposed to connect the sensors to the master brick and the ma
 | <img src="media/myplant6.jpg" alt="led" width="50%"> |
 |:--:|
 | *LED button* |
+
+
+| <img src="media/audio.png" alt="led" width="50%"> |
+|:--:|
+| * Speech output "Humidity sensor with id x has 0.0 degrees celsius…" * |
 </p>
 ## Fog
 
