@@ -13,7 +13,7 @@ def main():
     signal.signal(signal.SIGTERM, signal.SIG_DFL)
     loop = asyncio.get_event_loop()
 
-    config = Config(loop)
+    config = Config()
     database_connector = DatabaseConnector(config)
 
     edge_id_generator = EdgeIDGenerator(database_connector)
