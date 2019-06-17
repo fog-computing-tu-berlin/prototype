@@ -47,8 +47,8 @@ where "myplant" is the name of the supervised plant, "vTy" is an example ID for 
 
 To get reliable data one has to place the sensors directly on the plant. The humidity sensor should touch the potting soil. The ultraviolet sensor should be aligned to the sun.<br>
 <img src="media/myplant7.jpg" alt="plant setup" width="90%" height="90%"><br>
-Afterward you are supposed to connect the sensors to the master brick and the master brick to an (cheap) edge device. For example a raspberry pi with speakers or a Mac Book Pro (not a common edge device).<br>
-<img src="media/myplant10.jpg" alt="overview" width="100%" height="100%">
+Afterward you are supposed to connect the sensors to the master brick and the master brick to a (cheap) edge device. For example a raspberry pi with speakers or a Mac Book Pro (not a common edge device).<br>
+<img src="media/myplant10.jpg" alt="overview" width="90%" height="90%">
 
 ### Sequence diagramm
 
