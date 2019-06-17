@@ -146,7 +146,6 @@ Afterward you are supposed to connect the sensors to the master brick and the ma
 ### Persistence
 
 Dealing with energy outages or other problems, where we can't send all messages we build a modul which persists all messages on the disk until they are send. Therefor it creates small files up to 100 messages. Each message is appended to such a file. A seperate pointer file, stores the last processed message. When all messages of a file are processed, the file is deleted to free up space.
-
 <p style="text-align: center;">
  
 | <img src="media/persistence.jpg" alt="message files" width="60%"> |
