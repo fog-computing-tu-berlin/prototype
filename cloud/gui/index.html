@@ -102,7 +102,7 @@
             var SENSOR_ID = getQueryVariable("sensor") ? getQueryVariable("sensor") : 1;
             var LIMIT = getQueryVariable("limit") ? getQueryVariable("limit") : 50;
             var TIME = getQueryVariable("time") ? getQueryVariable("time") : 1000;
-            var RETRY = getQueryVariable("retry") ? getQueryVariable("retry") : 60;
+            var RETRY = getQueryVariable("retry") ? getQueryVariable("retry") : 100000;
 
             var lastId = -1;
             var charts = [];

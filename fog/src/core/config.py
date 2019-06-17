@@ -4,7 +4,7 @@ import os
 class Config:
     def __init__(self) -> None:
         super().__init__()
-        self.IS_DEBUG_LOGGING = bool(os.environ.get('IS_DEBUG_LOGGING', False))
+        self.IS_DEBUG_LOGGING = os.environ.get('IS_DEBUG_LOGGING', 'True').lower() in ('yes', 'true')
         self.CONTROL_MESSAGE_TICK_RATE = int(os.environ.get('CONTROL_MESSAGE_TICK_RATE', 0))
         self.CONTROL_MESSAGE_TICKER_UPDATE_TIMEOUT = int(os.environ.get('CONTROL_MESSAGE_TICKER_UPDATE_TIMEOUT', 300000))
         self.EDGE_RECEIVER_LISTEN_PORT = int(os.environ.get('EDGE_RECEIVER_LISTEN_PORT', 5555))
