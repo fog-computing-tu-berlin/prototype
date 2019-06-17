@@ -159,7 +159,9 @@ Afterward you are supposed to connect the sensors to the master brick and the ma
 ## Fog
 
 ## Graphical User Interface/Frontend
-In order to display historic but also current data, a Graphical User Interface was built upon standard web technologies such as HTML, CSS and JavaScript. Standard libraries were included such as _JQuery_, _Bootstrap_, and _Chart.js_. The user interface is served with an _nginx_ webserver and the deployment is _Docker_-ized. The page is responsive and renders correctly on different devices. The frontend supports different query parameters such as `sensor`, `limit`, `time` and `retry`. Example: http://localhost/?sensor=2&limit=50&time=1000&retry=1000
+In order to display historic but also current data, a Graphical User Interface was built upon standard web technologies such as HTML, CSS and JavaScript. Standard libraries were included such as [_JQuery_](https://jquery.com/), [_Bootstrap_](https://getbootstrap.com/), and [_Chart.js_](https://www.chartjs.org/). The user interface is served with an [_nginx_](https://www.nginx.com/) webserver and the deployment is [_Docker_](https://www.docker.com/)ized. The page is responsive and renders correctly on different devices. The frontend supports different query parameters such as `sensor`, `limit`, `time` and `retry`.
+<br>
+Example: http://localhost/?sensor=2&limit=50&time=1000&retry=1000
 
 <center>
 
@@ -170,7 +172,7 @@ In order to display historic but also current data, a Graphical User Interface w
 </center>
 # Code structure
 
-| <img src="media/tree.png" width="60%"> |
+| <img src="media/tree.png" width="20%"> |
 |:--:|
 | *Filesystem tree* |
 
@@ -182,8 +184,8 @@ Please refer to https://www.youtube.com/watch?v=1XjiOtrxI_4 for a minimal demo.
 # License
 The software is licensed under GPLv3 [13] and is published as Open Source Software under https://github.com/fog-computing-tu-berlin/prototype.
 
-
+<!--
 # References
-
 [1] A. Domingo, B. Bellalta, M. Palacin, M. Oliver and E. Almirall, "Public Open Sensor Data: Revolutionizing Smart Cities," in IEEE Technology and Society Magazine, vol. 32, no. 4, pp. 50-56, winter 2013. doi: 10.1109/MTS.2013.2286421 <br />
 [2] https://www.gnu.org/licenses/gpl-3.0.en.html <br />
+-->
