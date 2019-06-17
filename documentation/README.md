@@ -25,6 +25,18 @@ Technical University of Berlin
 
 ## Edge
 
+The Edge Client is a light weight Maven - Java programm. It collects data from sensors and sends it to the fog. The application also communicates with the user and gives feedback about the current values.
+The edge handles different sensors:
+- 1..n humidity sensors
+- 0..n temperature sensors
+- 0..n ultraviolet sensors
+- 1 button<br>
+A sample setup looks like this:<br>
+<img src="media/Sensors.png" alt="sensors" width="50%" height="50%">
+
+
+
+
 ## Fog
 
 
