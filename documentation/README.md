@@ -146,9 +146,13 @@ Afterward you are supposed to connect the sensors to the master brick and the ma
 ### Persistence
 
 Dealing with energy outages or other problems, where we can't send all messages we build a modul which persists all messages on the disk until they are send. Therefor it creates small files up to 100 messages. Each message is appended to such a file. A seperate pointer file, stores the last processed message. When all messages of a file are processed, the file is deleted to free up space.
-| <img src="media/persistence.jpg" alt="overview" width="70%"> |
+
+<p style="text-align: center;">
+ 
+| <img src="media/persistence.jpg" alt="message files" width="60%"> |
 |:--:|
-| *Message files* |
+| *Message files* | 
+</p>
 
 ### Reliable messaging
 
@@ -160,11 +164,6 @@ Dealing with energy outages or other problems, where we can't send all messages 
 | <img src="media/myplant6.jpg" alt="led" width="50%"> |
 |:--:|
 | *LED button* |
-
-
-| <img src="media/audio.png" alt="led" width="50%"> |
-|:--:|
-| * Speech output "Humidity sensor with id x has 0.0 degrees celsius…" * |
 </p>
 ## Fog
 
@@ -185,7 +184,6 @@ Example: http://localhost/?sensor=2&limit=50&time=1000&retry=1000
 | <img src="media/tree.png" width="20%"> |
 |:--:|
 | *Filesystem tree* |
-
 
 # Demo video
 Please refer to https://www.youtube.com/watch?v=1XjiOtrxI_4 for a minimal demo.
