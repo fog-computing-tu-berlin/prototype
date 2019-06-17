@@ -29,7 +29,7 @@ public class SensorResult {
 	}
 	
 	public String ultraShortString() {
-		return stringCreator("%d%s%s");
+		return stringCreator("%d;%s;%s");
 	}
 	
 	//Creates an int out of the double, to have smaller messages
