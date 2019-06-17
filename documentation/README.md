@@ -34,6 +34,9 @@ The edge handles different sensors:
 A sample setup looks like this:<br>
 <img src="media/Sensors.png" alt="sensors" width="50%" height="50%">
 <br>
+
+### Overview
+
 To start the JAVA-project: 
 
 ```bash
