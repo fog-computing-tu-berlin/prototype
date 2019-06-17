@@ -59,6 +59,8 @@ Afterward you are supposed to connect the sensors to the master brick and the ma
 
 ### Reliable messaging
 
+### Message format
+
 ### Human interaction
 button
 <img src="media/myplant6.jpg" alt="led" width="50%" height="50%">
