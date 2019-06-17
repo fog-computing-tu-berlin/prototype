@@ -25,8 +25,8 @@ public class MessageSender extends MessageHandler implements Runnable {
 	
 	@Override
 	public void run() {
-		try (ZContext context = new ZContext()) {
-			
+		try {
+			ZContext context = new ZContext();
 			Socket requester = context.createSocket(SocketType.REQ);
 			requester.connect("tcp://"+ host + ":" + port);
 			
@@ -38,15 +38,31 @@ public class MessageSender extends MessageHandler implements Runnable {
 					if(message != null) {
 //						System.out.println(message.toJson());
 //						System.out.println("Send message: [" + message.toShortMessage() + "]");
-						requester.send(message.toShortMessage(), 0);
-						String reply = requester.recvStr(0);
-						if(!reply.equals("1")) {
-							System.out.println(
-									"Received reply [" + reply + "]"
-									);
-						}else {
-							//Remove if message was successfully transmitted.
-							this.poll();
+						requester.setSendTimeOut(1000);
+						requester.setReceiveTimeOut(1000);
+						boolean success = requester.send(message.toShortMessage(), 0);
+						if(success) {
+							String reply = requester.recvStr(0);
+							if(reply == null) {
+								requester.close();
+								context.close();
+								context = new ZContext();
+								requester = context.createSocket(SocketType.REQ);
+								requester.connect("tcp://"+ host + ":" + port);
+							} else if(!reply.equals("1")) {
+								System.out.println(
+										"Received reply [" + reply + "]"
+										);
+							}else {
+								//Remove if message was successfully transmitted.
+								this.poll();
+							}
+						} else {
+							requester.close();
+							context.close();
+							context = new ZContext();
+							requester = context.createSocket(SocketType.REQ);
+							requester.connect("tcp://"+ host + ":" + port);
 						}
 					}
 					
