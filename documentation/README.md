@@ -10,14 +10,17 @@ Technical University of Berlin
 <br />
 
 # Abstract
-
-
-<!--img src="tree.png" height="400px"></img-->
+In this project we observe live values with a smart plant service that is connected to a Fog Computing infrastructure including several edge, cloud and fog specific components that interact with great care regarding fault tolerance. The setup is easily extendable and built upon state-of-the-art technologies.
 
 
 <div style="page-break-after: always;"></div>
 
 # Architecture
+
+| <img src="media/architecture.png" alt="architecture" width="90%"> |
+|:--:|
+| *Architecture* |
+
 
 # Components
 ## Cloud
@@ -32,14 +35,14 @@ The edge handles different sensors:
 - 0..n ultraviolet sensors
 - 1 button<br><br>
 A sample setup looks like this:<br>
-<p align="center">
-<img src="media/Sensors.png" alt="sensors" width="50%" height="50%">
-</p>
-<br>
+
+| <img src="media/Sensors.png" alt="led" width="50%"> |
+|:--:|
+| *Sensors* |
 
 ### Overview
 
-To start the JAVA-project: 
+To start the java project:
 
 ```bash
 install brickd https://www.tinkerforge.com/de/doc/Software/Brickd.html#brickd
@@ -51,13 +54,16 @@ java -jar -jar target\edge.client.jar 18.185.92.86 myplant vTy (h,HF1) (u,xkb) (
 Firstly one has to define the address of the fog node. There after the name of the supervised plant, for example: "myplant", "vTy" is an example ID for the button and the tuples in the end present the sensors. "h" is humidity, "t" - temperature, "u" - ultraviolet and the second param the ID. <br>
 
 To get reliable data one has to place the sensors directly on the plant. The humidity sensor should touch the potting soil. The ultraviolet sensor should be aligned to the sun.<br>
-<p align="center">
-<img src="media/myplant7.jpg" alt="plant setup" width="90%" height="90%">
-</p>
+
+| <img src="media/myplant7.jpg" alt="plantsetup" width="90%"> |
+|:--:|
+| *Plant setup* |
+
 Afterward you are supposed to connect the sensors to the master brick and the master brick to a (cheap) edge device. For example a raspberry pi with speakers or a Mac Book Pro (not a common edge device).<br>
-<p align="center">
-<img src="media/myplant10.jpg" alt="overview" width="90%" height="90%">
-</p>
+
+| <img src="media/myplant10.jpg" alt="overview" width="90%"> |
+|:--:|
+| *Overview* |
 
 ### Sequence diagramm
 
@@ -68,15 +74,32 @@ Afterward you are supposed to connect the sensors to the master brick and the ma
 ### Message format
 
 ### Human interaction
-button
-<img src="media/myplant6.jpg" alt="led" width="50%" height="50%">
+<p style="text-align: center;">
 
-
+| <img src="media/myplant6.jpg" alt="led" width="50%"> |
+|:--:|
+| *LED button* |
+</p>
 ## Fog
 
+## Graphical User Interface/Frontend
+In order to display historic but also current data, a Graphical User Interface was built upon standard web technologies such as HTML, CSS and JavaScript. Standard libraries were included such as _JQuery_, _Bootstrap_, and _Chart.js_. The user interface is served with an _nginx_ webserver and the deployment is _Docker_-ized. The page is responsive and renders correctly on different devices. The frontend supports different query parameters such as `sensor`, `limit`, `time` and `retry`. Example: http://localhost/?sensor=2&limit=50&time=1000&retry=1000
 
-# Code samples
+<center>
 
+| ![](media/frontend.png) |
+|:--:|
+| *Frontend displayed on Desktop (left) and mobile (right) device* |
+
+</center>
+# Code structure
+<center>
+
+| <img src="media/tree.png" width="30%"> |
+|:--:|
+| *Filesystem tree* |
+
+</center>
 ## We can make use of those templates.
 
 ```bash
