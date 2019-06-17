@@ -41,25 +41,26 @@ public class SensorDataMessage implements Message {
 
 	@Override
 	public String toShortMessage() {
-		return String.format("%s,%s,%d,%d", 
+		return String.format("%s,%d,%d,%s", 
 				this.name,
-				sensorResult.ultraShortString(),
 				firstTimeStamp,
-				lastTimeStamp - firstTimeStamp);
+				lastTimeStamp - firstTimeStamp,
+				sensorResult.ultraShortString());
 	}
 
 	public static Message parseMessage(String string) {
 		try {
-			
 			String[] split = string.split(",");
 			String name = split[0];
+			long first = Long.parseLong(split[1]);
+			long second = first + Long.parseLong(split[2]);
+			
+			
 			final Map<Sensor, Double> results = new HashMap<Sensor, Double>();
-			for (int i = 1; i < split.length - 2; i++) {
+			for (int i = 3; i < split.length; i++) {
 				addToResults(results, split[i]);
 			}
 			
-			long first = Long.parseLong(split[split.length - 2]);
-			long second = first + Long.parseLong(split[split.length - 1]);
 			
 			return new SensorDataMessage(name, new SensorResult(results), first, second);
 			
@@ -69,9 +70,10 @@ public class SensorDataMessage implements Message {
 	}
 	
 	private static void addToResults(Map<Sensor, Double> results, String in) {
-		SensorType type = SensorType.values()[in.charAt(0) - '0'];
-		String id = in.substring(1, 4);
-		double value = Double.parseDouble(in.substring(4));
+		String[] strings = in.split(";");
+		SensorType type = SensorType.values()[Integer.parseInt(strings[0])];
+		String id = strings[1];
+		double value = Double.parseDouble(strings[2]);
 		results.put(new Sensor(type, id), value);
 	}
 
