@@ -33,8 +33,32 @@ The edge handles different sensors:
 - 1 button<br>
 A sample setup looks like this:<br>
 <img src="media/Sensors.png" alt="sensors" width="50%" height="50%">
+<br>
+To start the JAVA-project: 
 
+```bash
+install brickd https://www.tinkerforge.com/de/doc/Software/Brickd.html#brickd
+install brickv https://www.tinkerforge.com/de/doc/Software/Brickv.html#brickv
+cd edge\edger.client\
+mvn clean package
+java -jar -jar target\edge.client.jar 18.185.92.86 myplant vTy (h,HF1) (u,xkb) (t,EKx)
+```
+where "myplant" is the name of the supervised plant, "vTy" is an example ID for the button and the tuples in the end present the sensors. "h" is humidity, "t" - temperature, "u" - ultraviolet and the second param the ID. <br>
 
+To get reliable data one has to place the sensors directly on the plant. The humidity sensor should touch the potting soil. The ultraviolet sensor should be aligned to the sun.<br>
+<img src="media/myplant7.jpg" alt="plant setup" width="90%" height="90%"><br>
+Afterward you are supposed to connect the sensors to the master brick and the master brick to an (cheap) edge device. For example a raspberry pi with speakers or a Mac Book Pro (not a common edge device).<br>
+<img src="media/myplant10.jpg" alt="overview" width="100%" height="100%">
+
+### Sequence diagramm
+
+### Persistence
+
+### Reliable messaging
+
+### Human interaction
+button
+<img src="media/myplant6.jpg" alt="led" width="50%" height="50%">
 
 
 ## Fog
