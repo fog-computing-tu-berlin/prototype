@@ -169,50 +169,10 @@ In order to display historic but also current data, a Graphical User Interface w
 
 </center>
 # Code structure
-<center>
 
-| <img src="media/tree.png" width="30%"> |
+| <img src="media/tree.png" width="60%"> |
 |:--:|
 | *Filesystem tree* |
-
-</center>
-## We can make use of those templates.
-
-```bash
-mvn package
-```
-
-```javascript
-dependencies {
-  implementation files('libs/swagger-java-client-1.0.0.jar')
-}
-```
-
-```java
-List<License> allLicenses = new ArrayList<>();
-…
-Thread thread = new Thread(new Runnable() {
-    @Override
-    public void run() {
-        LicensesApi apiInstance = new LicensesApi();
-        try {
-            allLicenses.clear();
-            allLicenses.addAll(apiInstance.apiV10LicensesGet(null, null, null,
-                    null, null, null, null));
-            for (License l : allLicenses) {
-                Log.d("LicenseFragment", "Loaded: " + l.getFullName());
-            }
-          } catch (ApiException e) {
-              e.printStackTrace();
-          }
-        }
-      }
-```
-
-```bash
-curl -X GET --header 'Accept: application/json' 'https://www.opensense.network/beta/api/v1.0/licenses'
-```
-
 
 
 # Demo video
