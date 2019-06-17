@@ -20,8 +20,84 @@ Technical University of Berlin
 # Architecture
 
 # Components
+
+
+## Fog
+
+The is a Python Programm that heavily utilizes ZeroMQ and the multiple `asyncio` tasks to process incoming messages and cache messages in case of connection issues.
+These routines are restarted in case of unexpected crashes. Mainly these tasks handle the internal queues for processing new control message for the Edge and uploading data to the Cloud. Additionally, one async-task is started per connected Edge device and published control messages periodically. Lastly one routine forwards requests for new edge ids to the cloud. Incoming messages from the Edge are only validate for a correct message format and then copied into internal queues to process them asynchronously. Upload of reports to the Cloud are uploaded in bulks periodically. The Fog is build with Docker and only has one Python-Interpreter (one CPU core) to process messages. If deployed on machines with multiple cores the fog might need a TCP Load Balancer.
+
+These are all settings avaliable via enviroment variables for the Fog Container.
+
+| ENV Variable                            | Default              | Description                                                                             |
+| --------------------------------------- | :------------------- | --------------------------------------------------------------------------------------- |
+| IS_DEBUG_LOGGING                        | `'False'`            | Enables a more verbose output                                                           |
+| CONTROL_MESSAGE_TICK_RATE               | `4`                  | Tickrate of Fog -> Edge Control Message in Hz                                           |
+| CONTROL_MESSAGE_TICKER_UPDATE_TIMEOUT   | `300000`             | Timout in Milliseconds                                                                  |
+| EDGE_RECEIVER_LISTEN_PORT               | `5555`               | TCP Port for the Edge Receiver                                                          |
+| EDGE_CONTROLLER_PORT                    | `5556`               | TCP Port tor the Edge Controller Message                                                |
+| EDGE_ID_GENERATOR_LISTEN_PORT           | `5557`               | TCP Port for the Edge ID Relay                                                          |
+| CLOUD_UPLOAD_URL                        | `'tcp://cloud:5558'` | Upstream URL for the Report Messages                                                    |
+| EDGE_ID_UPSTREAM_URL                    | `'tcp://cloud:5559'` | Upstream URL for the Edge ID Relay                                                      |
+| EDGE_RECEIVER_MAX_QUEUE_LENGTH          | `10000`              | ZeroMQ Max Queue Length for the Edge Receiver                                           |
+| EDGE_ID_RELAY_MAX_QUEUE_LENGTH          | `10000`              | ZeroMQ Max Queue Length for the Edge ID Relay                                           |
+| INTERNAL_MESSAGE_CACHE_MAX_QUEUE_LENGTH | `100000`             | ZeroMQ Max Queue Length for Caches                                                      |
+| CLOUD_SUBMIT_TIMEOUT                    | `60000`              | Timout for Report Messages to Upstream                                                  |
+| CLOUD_ID_RELAY_CLOUD_TIMEOUT            | `5000`               | Timout for Edge ID Relayed Messages to Upstream                                         |
+| WEATHER_LIMIT_HOURS_IN_FUTURE           | `6`                  | Hours in forecast to consider for calculating Water & Light status                      |
+| WEATHER_FORCE_ALWAYS_WATER_RETURN_VALUE | `-1`                 | Debug value to override the calculated value for a static; `-1` disables the override   |
+| WEATHER_FORCE_ALWAYS_LIGHT_RETURN_VALUE | `-1`                 | Debug value to override the calculated value for a static; `-1` disables the override   |
+| WEATHER_CITY                            | `'Berlin'`           | City to use for the weather forecast; See [OpenWeatherMap](https://openweathermap.org/) |
+
+
 ## Cloud
-...
+
+
+### REST API
+
+A simple REST API build with [PostgREST 5.2](https://github.com/PostgREST/postgrest) and utilizing [PostreSQL](https://www.postgresql.org/) as Datastore for the Application. It only does validation of the message and restricts access to only `GET` and `POST` with relevant params. Basic filtering and Ordering are supported for the frontend.
+They expose 4 relevant Endpoints:
+- `GET` and `POST` ` http://<server>/sensor` with the following model
+```json
+{
+  "id": "string",
+  "edge_id": "string",
+  "temperature": "integer",
+  "temperature_sensor_id": "string",
+  "humidity": "integer",
+  "humidity_sensor_id": "string",
+  "uv": "integer",
+  "uv_sensor_id": "string",
+  "started_at": "string",
+  "stopped_at": "string"
+}
+```
+- `GET` and `POST` ` http://<server>/edge_id`
+```json
+{
+  "id": "integer",
+  "plant": "string"
+}
+```
+
+### ZeroMQ
+
+The Cloud ZeroMQ is written in Python. It is build around ZeroMQ to accept messages from Fog clients. It is build similar to the Fog using `asyncio` for multiple loops to work off the Queue. Messages to the REST API are submitted in bulks periodically.
+
+These are all settings avaliable via enviroment variables for the Cloud Container.
+
+| ENV Variable                            | Default                    | Description                                             |
+| --------------------------------------- | :------------------------- | ------------------------------------------------------- |
+| IS_DEBUG_LOGGING                        | `'False'`                  | Enables a more verbose output                           |
+| DATABASE_REST_URL                       | `'http://postgrest:3000/'` | Upstream URL for the Database REST Service              |
+| FOG_RECEIVER_LISTEN_PORT                | `5558`                     | TCP Port for the Report Message from Fog                |
+| ID_FOG_RECEIVER_LISTEN_PORT             | `5559`                     | TCP Port for the Edge ID Requests                       |
+| FOG_RECEIVER_MAX_QUEUE_LENGTH           | `10000`                    | ZeroMQ Max Queue Length for the Report Message from Fog |
+| ID_RECEIVER_MAX_QUEUE_LENGTH            | `10000`                    | ZeroMQ Max Queue Length for the Edge ID Requests        |
+| INTERNAL_MESSAGE_CACHE_MAX_QUEUE_LENGTH | `100000`                   | ZeroMQ Max Queue Length for Caches                      |
+
+
+
 
 ## Edge
 
@@ -35,9 +111,6 @@ A sample setup looks like this:<br>
 <img src="media/Sensors.png" alt="sensors" width="50%" height="50%">
 
 
-
-
-## Fog
 
 
 # Code samples
