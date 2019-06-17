@@ -72,8 +72,9 @@ These are all settings avaliable via enviroment variables for the Cloud Containe
 
 ### REST
 
-A simple REST API build with [PostgREST 5.2](https://github.com/PostgREST/postgrest) and utilizing [PostreSQL](https://www.postgresql.org/) as Datastore for the Application. It only does validation of the message and restricts access to only `GET` and `POST` with relevant params. Basic filtering and Ordering are supported for the frontend.
-They expose 4 relevant Endpoints:
+A simple REST API build with [PostgREST 5.2](https://github.com/PostgREST/postgrest) and utilizing [PostreSQL 11](https://www.postgresql.org/) as Datastore for the Application. It only does validation of the message and restricts access to only `GET` and `POST` with relevant params. Basic filtering and Ordering are supported for the frontend. Migrations for PostgreSQL are applied with the [FlyWay 6 Beta](https://flywaydb.org/) to have versioned database schema.
+
+The API exposes 4 relevant Endpoints:
 - `GET` and `POST` ` http://<server>/sensor` with the following model
 ```json
 {
