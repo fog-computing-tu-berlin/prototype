@@ -210,4 +210,6 @@ Please refer to https://www.youtube.com/watch?v=1XjiOtrxI_4 for a minimal demo o
 
 
 # License
-The software is licensed under GPLv3 [13] and is published as Open Source Software under https://github.com/fog-computing-tu-berlin/prototype.
+The software is licensed under GPLv3 and is published as Open Source Software under
+
+https://github.com/fog-computing-tu-berlin/prototype
