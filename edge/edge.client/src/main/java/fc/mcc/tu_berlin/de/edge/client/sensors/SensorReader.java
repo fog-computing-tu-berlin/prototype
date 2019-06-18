@@ -109,7 +109,7 @@ public class SensorReader {
 	private Double readTemperature(Device d) {
 		if(App.devMode) {
 			ranTemperature += (devModeRan.nextInt(3) - 1);
-			ranTemperature = Math.min(Math.max(ranTemperature, -100), 350);
+			ranTemperature = Math.min(Math.max(ranTemperature, -1000), 3500);
 			return (double) ranTemperature;
 		}else {
 			if(temp_dead == 0) {
