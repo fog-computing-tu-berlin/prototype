@@ -21,8 +21,9 @@ In this project we observe live values with a smart plant service that is connec
 |:--:|
 | *Architecture* |
 
-
 # Components
+
+In the following, the different components of the Fog Computing infrastructure are described briefly.
 
 
 ## Fog
@@ -178,7 +179,12 @@ To make our programm accessible to all we build different ways of communication.
 |:--:|
 | *LED button* |
 
+
+<div style="page-break-after: always;"></div>
+
+
 ## Graphical User Interface/Frontend
+
 In order to display historic but also current data, a Graphical User Interface was built upon standard web technologies such as HTML, CSS and JavaScript. Standard libraries were included such as [_JQuery_](https://jquery.com/), [_Bootstrap_](https://getbootstrap.com/), and [_Chart.js_](https://www.chartjs.org/). The user interface is served with an [_nginx_](https://www.nginx.com/) webserver and the deployment is [_Docker_](https://www.docker.com/)ized. The page is responsive and renders correctly on different devices. The frontend supports different query parameters such as `sensor`, `limit`, `time` and `retry`.
 <br>
 Example: http://localhost/?sensor=2&limit=50&time=1000&retry=1000
@@ -190,15 +196,20 @@ Example: http://localhost/?sensor=2&limit=50&time=1000&retry=1000
 | *Frontend displayed on Desktop (left) and mobile (right) device* |
 
 </center>
+
+<div style="page-break-after: always;"></div>
+
 # Code structure
 
-| <img src="media/tree.png" width="20%"> |
+| <img src="media/tree.png" width="30%"> |
 |:--:|
 | *Filesystem tree* |
 
 # Demo video
-Please refer to https://www.youtube.com/watch?v=1XjiOtrxI_4 for a minimal demo of the plant setup. Under https://youtu.be/7Vdtk6EMx8c a short demo of the frontend can be seen.
+Please refer to https://www.youtube.com/watch?v=1XjiOtrxI_4 for a minimal demo of the plant setup. Under https://www.youtu.be/7Vdtk6EMx8c a short demo of the frontend can be seen.
 
 
 # License
-The software is licensed under GPLv3 [13] and is published as Open Source Software under https://github.com/fog-computing-tu-berlin/prototype.
+The software is licensed under GPLv3 and is published as Open Source Software under
+
+https://github.com/fog-computing-tu-berlin/prototype
