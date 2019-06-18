@@ -27,10 +27,10 @@ In this project we observe live values with a smart plant service that is connec
 
 ## Fog
 
-The is a Python Programm that heavily utilizes ZeroMQ and the multiple `asyncio` tasks to process incoming messages and cache messages in case of connection issues.
+The Fog is a Python Programm that heavily utilizes ZeroMQ and multiple `asyncio` tasks to process incoming messages and cache messages in case of connection issues.
 These routines are restarted in case of unexpected crashes. Mainly these tasks handle the internal queues for processing new control message for the Edge and uploading data to the Cloud. Additionally, one async-task is started per connected Edge device and published control messages periodically. Lastly one routine forwards requests for new edge ids to the cloud. Incoming messages from the Edge are only validate for a correct message format and then copied into internal queues to process them asynchronously. Upload of reports to the Cloud are uploaded in bulks periodically. The Fog is build with Docker and only has one Python-Interpreter (one CPU core) to process messages. If deployed on machines with multiple cores the fog might need a TCP Load Balancer.
 
-To start the fog use `docker-compose up --build`. These are all settings avaliable via enviroment variables for the Fog Container.
+To start the fog use `docker-compose up --build`. These are all settings available via environment variables for the Fog Container.
 
 | ENV Variable                            | Default              | Description                                                                             |
 | --------------------------------------- | :------------------- | --------------------------------------------------------------------------------------- |
@@ -59,9 +59,9 @@ The Cloud is build with an [REST API](#REST) and an sperate [ZeroMQ](#ZeroMQ) co
 
 ### ZeroMQ
 
-The Cloud ZeroMQ is written in Python. It is build around ZeroMQ to accept messages from Fog clients. It is build similar to the Fog using `asyncio` for multiple loopsto work off the Queue. Messages to the REST API are submitted in bulks periodically.
+The Cloud ZeroMQ is written in Python. It is build around ZeroMQ to accept messages from Fog clients. It is build similar to the Fog using `asyncio` for multiple loops to work off the Queue. Messages to the REST API are submitted in bulks periodically.
 
-These are all settings avaliable via enviroment variables for the Cloud Container.
+These are all settings available via environment variables fore Cloud Container.
 
 | ENV Variable                            | Default                    | Description                                             |
 | --------------------------------------- | :------------------------- | ------------------------------------------------------- |
@@ -144,7 +144,7 @@ Afterward you are supposed to connect the sensors to the master brick and the ma
 
 ### Persistence
 
-Dealing with energy outages or other problems, where we can't send all messages we build a modul which persists all messages on the disk until they are send. Therefor it creates small files up to 100 messages. Each message is appended to such a file. A seperate pointer file, stores the last processed message. When all messages of a file are processed, the file is deleted to free up space.
+Dealing with energy outages or other problems, where we can't send all messages we build a modul which persists all messages on the disk until they are send. Therefor it creates small files up to 100 messages. Each message is appended to such a file. A separate pointer file stores the last processed message. When all messages of a file are processed, the file is deleted to free up space.
 <p style="text-align: center;">
 
 | <img src="media/persistence.jpg" alt="message files" width="60%"> |
@@ -155,8 +155,8 @@ Dealing with energy outages or other problems, where we can't send all messages 
 ### Message format
 
 To communicate between fog and edge we try to reduce the message size as much as possible. That's why we don't send simple json messages.<br>
-For example, we didn't send the start end end timestamp of a meassurement. Instead we send the start end the smaller difference.
-Also we don't send whether it needs water or sun seperatly, we combine it to one variable using simple math. 
+For example, we didn't send the start end end timestamp of a measurement. Instead we send the start end the smaller difference.
+Also we don't send whether it needs water or sun seperatly, we combine it to one variable using simple math.
 needs water = {0,1}, needs sun can be {0,1,2} (less, same, more). Our result is *3 \* water + sun*
 
 ### Human interaction
