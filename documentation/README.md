@@ -136,7 +136,7 @@ To get reliable data one has to place the sensors directly on the plant. The hum
 |:--:|
 | *Plant setup* |
 
-Afterward you are supposed to connect the sensors to the master brick and the master brick to a (cheap) edge device. For example a raspberry pi with speakers or a Mac Book Pro (not a common edge device).<br>
+Afterward you are supposed to connect the sensors to the master brick and the master brick to a (cheap) edge device. For example a Raspberry Pi with speakers or a Mac Book Pro (not a common edge device).<br>
 
 | <img src="media/myplant10.jpg" alt="overview" width="90%"> |
 |:--:|
@@ -168,7 +168,7 @@ To make our programm accessible to all we build different ways of communication.
 | left   | off      | don't need water                          |
 | left   | on       | needs water                               |
 | left   | blinking | needs water, based on a local calculation |
-| left   | press    | Read out loud the current values          |
+| left   | press    | reads out loud the current values         |
 | right  | off      | needs more sun                            |
 | right  | on       | no sun chance                             |
 | right  | blinking | to much sun                               |
