@@ -142,8 +142,6 @@ Afterward you are supposed to connect the sensors to the master brick and the ma
 |:--:|
 | *Overview* |
 
-### Sequence diagramm
-
 ### Persistence
 
 Dealing with energy outages or other problems, where we can't send all messages we build a modul which persists all messages on the disk until they are send. Therefor it creates small files up to 100 messages. Each message is appended to such a file. A seperate pointer file, stores the last processed message. When all messages of a file are processed, the file is deleted to free up space.
@@ -154,9 +152,12 @@ Dealing with energy outages or other problems, where we can't send all messages 
 | *Message files* |
 </p>
 
-### Reliable messaging
-
 ### Message format
+
+To communicate between fog and edge we try to reduce the message size as much as possible. That's why we don't send simple json messages.<br>
+For example, we didn't send the start end end timestamp of a meassurement. Instead we send the start end the smaller difference.
+Also we don't send whether it needs water or sun seperatly, we combine it to one variable using simple math. 
+needs water = {0,1}, needs sun can be {0,1,2} (less, same, more). Our result is *3 \* water + sun*
 
 ### Human interaction
 
