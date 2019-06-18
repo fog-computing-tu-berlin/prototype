@@ -77,7 +77,7 @@ These are all settings avaliable via enviroment variables for the Cloud Containe
 
 A simple REST API build with [PostgREST 5.2](https://github.com/PostgREST/postgrest) and utilizing [PostreSQL 11](https://www.postgresql.org/) as Datastore for the Application. It only does validation of the message and restricts access to only `GET` and `POST` with relevant params. Basic filtering and Ordering are supported for the frontend. Migrations for PostgreSQL are applied with the [FlyWay 6 Beta](https://flywaydb.org/) to have versioned database schema.
 
-The API exposes 4 relevant Endpoints:
+The API exposes 4 relevant endpoints:
 - `GET` and `POST` ` http://<server>/sensor` with the following model
 ```json
 {
@@ -104,12 +104,13 @@ The API exposes 4 relevant Endpoints:
 
 ## Edge
 
-The Edge Client is a light weight Maven - Java programm. It collects data from sensors and sends it to the fog. The application also communicates with the user and gives feedback about the current values.
+The Edge Client is a light weight Maven  Java programm. It collects data from sensors and sends it to the fog. The application also communicates with the user and gives feedback about the current values.
 The edge handles different sensors:
-- 1..n humidity sensors
-- 0..n temperature sensors
-- 0..n ultraviolet sensors
-- 1 button<br><br>
+
+- _1..n_ humidity sensors
+- _0..n_ temperature sensors
+- _0..n_ ultraviolet sensors
+- _1_ button<br><br>
 A sample setup looks like this:<br>
 
 | <img src="media/Sensors.png" alt="led" width="50%"> |
@@ -118,7 +119,7 @@ A sample setup looks like this:<br>
 
 ### Overview
 
-To start the java project:
+To start the java project run:
 
 ```bash
 install brickd https://www.tinkerforge.com/de/doc/Software/Brickd.html#brickd
@@ -127,7 +128,7 @@ cd edge\edge.client\
 mvn clean package
 java -jar -jar target\edge.client.jar 18.185.92.86 myplant vTy (h,HF1) (u,xkb) (t,EKx)
 ```
-Firstly one has to define the address of the fog node. There after the name of the supervised plant, for example: "myplant", "vTy" is an example ID for the button and the tuples in the end present the sensors. "h" is humidity, "t" - temperature, "u" - ultraviolet and the second param the ID. <br>
+Firstly, one has to define the address of the fog node. There after the name of the supervised plant, for example: "myplant", "vTy" is an example ID for the button and the tuples in the end present the sensors. "h" is humidity, "t" - temperature, "u" - ultraviolet and the second param the ID. <br>
 
 To get reliable data one has to place the sensors directly on the plant. The humidity sensor should touch the potting soil. The ultraviolet sensor should be aligned to the sun.<br>
 
@@ -147,10 +148,10 @@ Afterward you are supposed to connect the sensors to the master brick and the ma
 
 Dealing with energy outages or other problems, where we can't send all messages we build a modul which persists all messages on the disk until they are send. Therefor it creates small files up to 100 messages. Each message is appended to such a file. A seperate pointer file, stores the last processed message. When all messages of a file are processed, the file is deleted to free up space.
 <p style="text-align: center;">
- 
+
 | <img src="media/persistence.jpg" alt="message files" width="60%"> |
 |:--:|
-| *Message files* | 
+| *Message files* |
 </p>
 
 ### Reliable messaging
