@@ -160,6 +160,19 @@ Dealing with energy outages or other problems, where we can't send all messages 
 
 ### Human interaction
 
+To make our programm accessible to all we build different ways of communication.
+
+| button | state    | meaning                                   |
+|--------|----------|-------------------------------------------|
+| left   | off      | don't need water                          |
+| left   | on       | needs water                               |
+| left   | blinking | needs water, based on a local calculation |
+| left   | press    | Read out loud the current values          |
+| right  | off      | needs more sun                            |
+| right  | on       | no sun chance                             |
+| right  | blinking | to much sun                               |
+| right  | press    | reads out loud the needs of the plant     |
+
 | <img src="media/myplant6.jpg" alt="led" width="50%"> |
 |:--:|
 | *LED button* |
